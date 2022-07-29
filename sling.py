@@ -10,6 +10,8 @@ from gtts import gTTS
 from threading import Thread
 
 import os
+import struct
+import re
 
 def tts(read_text, read_lang):
     translator = Translator()
@@ -20,26 +22,38 @@ def tts(read_text, read_lang):
     speak.save(name)
     os.system("mpg321 " + name)
 
+def read(ser):
+    #line = (ser.readline()).replace("\r\n", "")
+
+    line = ser.readline()
+    values = line.split()
+
+    output = {}
+
+    for i in range(5):
+        output[i] = re.sub("[a-z']", "", str(values[i]))
+    return output
+
 def main():
-
-
-    translator = Translator()
 
     start = "These nuts! Hah, Goatee!"
 
     audio_thread = Thread(target=tts, args=[start, "en"])
     audio_thread.start()
 
-    audio_thread.join()
-    #tts(start, "en")
-    #ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
-    #ser = serial.Serial('COM1', baudrate = 115200, timeout=1)
+    ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
 
-    #while True:
-        #print(ser.read(27))
-            #print(ser.readline())
+    for i in range (100):
+        #get rid of startup serial
+        ser.readline()
+
+    while True:
+        #print(ser.readline())
+        print(read(ser))
+        
 
     #ser.close()
+    #audio_thread.join()
 
 if __name__ == "__main__":
     main()
