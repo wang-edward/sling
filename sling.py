@@ -7,12 +7,17 @@ from python_translator import Translator
 import pyttsx3
 from gtts import gTTS
 
+from threading import Thread
+
 import os
 
 def tts(read_text, read_lang):
+    translator = Translator()
+    new_text = str(translator.translate(read_text, read_lang, "en"))
+
     speak = gTTS(text=read_text, lang=read_lang)
-    name = read_text + ".mp3"
-    speak.save(read_text + ".mp3")
+    name = read_text.replace(" ", "_") + ".mp3"
+    speak.save(name)
     os.system("mpg321 " + name)
 
 def main():
@@ -22,21 +27,7 @@ def main():
 
     start = "These nuts! Hah, Goatee!"
 
-    result = str(translator.translate(start, "es", "en"))
-
-    start_tts = gTTS(text=start, lang='en')
-    result_tts = gTTS(text=result, lang='es')
-
-    #tts(start, "en")
-
-    start_tts.save("start_tts.mp3")
-    result_tts.save("end_tts.mp3")
-
-    os.system("mpg321 start_tts.mp3")
-    print("\n\n\n\n\n\n\n TEST \n\n\n\n\n\n\n")
-    os.system("mpg321 end_tts.mp3")
-
-
+    tts(start, "en")
     #ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
     #ser = serial.Serial('COM1', baudrate = 115200, timeout=1)
 
