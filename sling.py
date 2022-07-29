@@ -27,7 +27,11 @@ def main():
 
     start = "These nuts! Hah, Goatee!"
 
-    tts(start, "en")
+    audio_thread = Thread(target=tts, args=[start, "en"])
+    audio_thread.start()
+
+    audio_thread.join()
+    #tts(start, "en")
     #ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
     #ser = serial.Serial('COM1', baudrate = 115200, timeout=1)
 
