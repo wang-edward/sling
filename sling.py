@@ -13,6 +13,8 @@ import os
 import struct
 import re
 
+import json
+
 def tts(read_text, read_lang):
     translator = Translator()
     new_text = str(translator.translate(read_text, read_lang, "en"))
@@ -31,10 +33,32 @@ def read(ser):
     output = {}
 
     for i in range(5):
-        output[i] = re.sub("[a-z']", "", str(values[i]))
+        output[i] = re.sub(r"[a-z'\\]", "", str(values[i]))
     return output
 
+def classify(values, bind_map):
+    conc = {}
+    for i in range(5):
+        if (float(values[i])<=0.8):
+            conc[i]=1
+        else:
+            conc[i]=0 #implied?
+
+    sum = 0
+
+    for i in range(5):
+        sum += 2 ** i * conc[i]
+    print(bind_map.get(str(sum)))
+    print("sum: {0}".format(sum))
+
 def main():
+
+    bind_map={}
+
+    with open('binds.json', 'r') as f:
+
+        bind_map = json.load(f)
+        print(bind_map)
 
     start = "These nuts! Hah, Goatee!"
 
@@ -48,9 +72,8 @@ def main():
         ser.readline()
 
     while True:
-        #print(ser.readline())
-        print(read(ser))
-        
+        #print(read(ser))
+        print(classify(read(ser), bind_map))
 
     #ser.close()
     #audio_thread.join()
