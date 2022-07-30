@@ -15,6 +15,14 @@ import re
 
 import json
 
+
+
+def start_tts(read_text, read_lang):
+    audio_thread = Thread(target=tts, args=[read_text, read_lang])
+    audio_thread.start()
+
+
+
 def tts(read_text, read_lang):
     translator = Translator()
     new_text = str(translator.translate(read_text, read_lang, "en"))
@@ -31,9 +39,8 @@ def read(ser):
     values = line.split()
 
     output = {}
-
     for i in range(5):
-        output[i] = re.sub(r"[a-z'\\]", "", str(values[i]))
+        output[i] = re.sub(r"[a-zA-Z'\\]", "", str(values[i]))
     return output
 
 def classify(values, bind_map):
@@ -43,7 +50,6 @@ def classify(values, bind_map):
             conc[i]=1
         else:
             conc[i]=0 #implied?
-
     sum = 0
 
     for i in range(5):
@@ -59,11 +65,6 @@ def main():
 
         bind_map = json.load(f)
         print(bind_map)
-
-    start = "These nuts! Hah, Goatee!"
-
-    audio_thread = Thread(target=tts, args=[start, "en"])
-    audio_thread.start()
 
     ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
 
