@@ -1,26 +1,19 @@
-#from tkinter import *
+from tkinter import *
 from struct import *
 import serial
 import time
-
 from python_translator import Translator
 import pyttsx3
 from gtts import gTTS
-
 from threading import Thread
-
 import os
 import struct
 import re
-
 import json
 
 global current_char
 global current_text
 global current_lang
-
-
-
 global bind_map
 
 def read(ser):
@@ -71,6 +64,35 @@ def main():
     current_char = "."
     current_text = ""
     current_lang = "en"
+    lang_to_code = {}
+    lang_data = json.load(open('lang.json'))
+    for i in lang_data["text"]:
+        lang_to_code[i["language"]] = i["code"]
+
+    root = Tk()
+    root.title("sling")
+    canvas = Frame(root, width=800, height=500, bg="#B5D99C")
+    canvas.grid(columnspan=5, rowspan=7)
+    heading = Label(root, text="SLING", font=("Avenir", 32), bg="#B5D99C", fg="#333333")
+    heading.grid(columnspan=3, column=1, row=0)
+    h2 = Label(root, text="Translated characters: ", font=("Avenir", 16), bg="#B5D99C", fg="#333333")
+    h2.grid(columnspan=3, column=1, row=2)
+    p = Message(root, text=current_text, font=("Avenir", 18), bg="#F5F7DC", fg="#333333")
+    p.grid(columnspan=3, column=1, row=3)
+    prompt = Label(root, text="Select a language in the dropdown below:", font=("Avenir", 16), bg="#B5D99C", fg="#333333")
+    prompt.grid(columnspan=3, column=1, row=4)
+    speech_text = StringVar()
+    speech_btn = Button(root, textvariable=speech_text, command=lambda:tts(current_text, current_lang), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
+    speech_text.set("Speech")
+    speech_btn.grid(column=3, row=5, sticky=W)
+    options = lang_to_code.keys()
+# Text selected in dropdown
+    clicked = StringVar(value="Select:")
+    drop = OptionMenu(root, clicked, *options)
+    drop.config(font=("Avenir", 16), fg="#333333", bd=0, width=15)
+    drop.grid(column=1, row=5, sticky=E)
+    drop["bg"]="#FFFF82"
+
     with open('binds.json', 'r') as f:
         bind_map = json.load(f)
     print(bind_map)
@@ -81,6 +103,8 @@ def main():
         ser.readline()
 
     while True:
+        root.update_idletasks()
+        root.update()
         values = read(ser)
         #print(values[0])
         if (str(values[0]) == "W"):
@@ -98,6 +122,7 @@ def main():
             audio_thread = Thread(target=tts, args=[current_text, current_lang])
             audio_thread.start()
         print("current_char: {0}, current_text: {1}".format(current_char, current_text))
+        p['text'] = current_text
 
 if __name__ == "__main__":
     main()
