@@ -15,14 +15,6 @@ import re
 
 import json
 
-global current_char
-global current_text
-global current_lang
-
-
-
-global bind_map
-
 def read(ser):
     values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
     #print(values)
@@ -47,7 +39,7 @@ def tts(read_text, read_lang):
     translator = Translator()
     new_text = str(translator.translate(read_text, read_lang, "en"))
 
-    speak = gTTS(text=read_text, lang=read_lang)
+    speak = gTTS(text=new_text, lang=read_lang)
     name = read_text.replace(" ", "_") + ".mp3"
     speak.save(name)
     os.system("mpg321 " + name)
@@ -67,7 +59,7 @@ def update(ser, bindings, char, text, lang):
         audio_thread = Thread(target=tts, args=[text, lang])
         audio_thread.start()
 
-def main():
+def util_init():
     current_char = "."
     current_text = ""
     current_lang = "en"
@@ -80,6 +72,8 @@ def main():
         #get rid of startup serial
         ser.readline()
 
+
+def util_loop():
     while True:
         values = read(ser)
         #print(values[0])
