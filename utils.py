@@ -18,7 +18,7 @@ global bind_map
 
 def read(ser):
     values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
-    #print(values)
+    print(values)
     return values
 
 def classify(values, bind_map):
@@ -33,7 +33,7 @@ def classify(values, bind_map):
     for i in range(5):
         sum += 2 ** i * conc[i]
     ans = bind_map.get(str(sum))
-    print(ans)
+    #print(ans)
     return (bind_map.get(str(sum)))
 
 def tts(read_text, read_lang):
@@ -107,22 +107,26 @@ def main():
         root.update()
         values = read(ser)
         #print(values[0])
-        if (str(values[0]) == "W"):
-            if (current_char != None):
-                current_text += current_char
-        if (str(values[0]) == "D"):
-            values.pop(0) #remove "D" from data
-            #print(values)
-            temp = classify(values, bind_map)
-            print(temp)
-            current_char = temp
-            #current_char = classify(values, bind_map)
+        print(len(values))
+        if (len(values)==1 or len(values)==6):
+            if (str(values[0]) == "W"):
+                if (current_char != None):
+                    current_text += current_char
+            elif (str(values[0]) == "D"):
+                values.pop(0) #remove "D" from data
+                #print(values)
+                temp = classify(values, bind_map)
+                print(temp)
+                current_char = temp
+                #current_char = classify(values, bind_map)
 
-        if (str(values[0]) == "S"):
-            audio_thread = Thread(target=tts, args=[current_text, current_lang])
-            audio_thread.start()
-        print("current_char: {0}, current_text: {1}".format(current_char, current_text))
-        p['text'] = current_text
+            elif (str(values[0]) == "S"):
+                audio_thread = Thread(target=tts, args=[current_text, current_lang])
+                audio_thread.start()
+            elif (str(values[0]) == "C"):
+                current_text = ""
+            p['text'] = current_text
+            print("current_char: {0}, current_text: {1}".format(current_char, current_text))
 
 if __name__ == "__main__":
     main()

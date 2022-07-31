@@ -76,7 +76,8 @@ char_c.grid(column=1, row=3, sticky=W)
 
 # Bottom btns ---------------------------->
 
-speak_icon = PhotoImage(file='img/speak.png', width=50, height=50)
+speak_icon = PhotoImage(file='img/volume-high.png')
+#speak_icon = speak_icon.subsample(2,2)
 # img_label= Label(image=speak_icon)
 speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
 speak_btn.grid(column=2, row=3)
@@ -84,6 +85,10 @@ speak_btn.grid(column=2, row=3)
 
 speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
 speak_text.grid(column=2, row=4, sticky=N)
+
+clear_icon = PhotoImage(file = 'img/close-circle.png')
+clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
+clear_btn.grid(column=3, row=3)
 
 clear_text = Label(root, text="Clear", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
 clear_text.grid(column=3, row=4, sticky=N)
