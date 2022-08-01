@@ -14,13 +14,14 @@ from helpers import bind_map, lang_to_code
 
 
 class SlingStorage:
-    def __init__(self, char, text, lang):
+    def __init__(self, char, text, other_text, lang):
         self.char = char
         self.text = text
+        self.other_text = other_text
         self.lang = lang
 
 
-curr = SlingStorage(".", "", "en")
+curr = SlingStorage(".", "","","en")
 
 
 def read(ser):
@@ -80,6 +81,8 @@ def update(ser, bindings, char, text, lang):
 def change_language(selection):
     print(lang_to_code)
     curr.lang = lang_to_code.get(str(selection))
+    curr.other_text = translate(curr.text,curr.lang)
+    #curr.lang = str(selection.lower())
     print(curr.lang)
 
 
@@ -136,7 +139,7 @@ def main():
     # Bottom btns ---------------------------->
 
     speak_icon = PhotoImage(file='img/volume-high.png')
-    #speak_icon = speak_icon.subsample(2,2)
+    speak_icon = speak_icon.subsample(2,2)
     # img_label= Label(image=speak_icon)
     speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
     speak_btn.grid(column=2, row=3)
@@ -146,6 +149,7 @@ def main():
 
 
     clear_icon = PhotoImage(file = 'img/close-circle.png')
+    clear_icon = clear_icon.subsample(2,2)
     clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
     clear_btn.grid(column=3, row=3)
 
@@ -171,6 +175,7 @@ def main():
                 if (curr.char != None):
                     curr.text += curr.char
                     translated_text = translate(curr.text, curr.lang)
+                    print(curr.text)
             elif (str(values[0]) == "D"):
                 values.pop(0) #remove "D" from data
                 #print(values)
@@ -186,7 +191,7 @@ def main():
             elif (str(values[0]) == "C"):
                 curr.text = ""
             text_eng.configure(text=curr.text)
-            text_other.configure(text=translated_text)
+            text_other.configure(text=curr.other_text)
             #print("curr.char: {0}, curr.text: {1}".format(curr.char, curr.text))
 
 if __name__ == "__main__":
