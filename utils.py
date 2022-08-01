@@ -11,12 +11,17 @@ import struct
 import re
 import json
 from helpers import bind_map, lang_to_code
-# bind_map 0=a, 1=b etc.
 
 
-# global current_char
-# global current_text
-# global current_lang
+class SlingStorage:
+    def __init__(self, char, text, lang):
+        self.char = char
+        self.text = text
+        self.lang = lang
+
+
+curr = SlingStorage(".", "", "en")
+
 
 def read(ser):
     values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
@@ -60,28 +65,26 @@ def update(ser, bindings, char, text, lang):
     values = read(ser)
     #print(values[0])
     if (str(values[0]) == "W"):
-        if (current_char != ""):
-            current_text += current_char
+        if (curr.char != ""):
+            curr.text += curr.char
     if (str(values[0]) == "D"):
         values.pop(0) #remove "D" from data
         #print(values)
-        current_char = classify(values, bindings)
+        curr.char = classify(values, bindings)
 
     if (str(values[0]) == "S"):
         audio_thread = Thread(target=tts, args=[text, lang])
         audio_thread.start()
 
 
-def main():
-    current_char = "."
-    current_text = ""
-    current_lang = "en"
-    translated_text = ""
+def change_language(selection):
+    print(lang_to_code)
+    curr.lang = lang_to_code.get(selection)
+    print(curr.lang)
 
-    def change_language(selection):
-        print(lang_to_code)
-        current_lang = lang_to_code.get(selection)
-        print(current_lang)
+
+def main():
+    translated_text = ""
     
     root = Tk()
 
@@ -103,7 +106,6 @@ def main():
 
     text_eng = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
     text_eng.grid(column=0, row=2, sticky=NW, padx=(40,0), pady=(25,0))
-
 
 
     # OTHER LANGUAGES SECTION  --------------------------->
@@ -139,9 +141,9 @@ def main():
     speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
     speak_btn.grid(column=2, row=3)
 
-
     speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
     speak_text.grid(column=2, row=4, sticky=N)
+
 
     clear_icon = PhotoImage(file = 'img/close-circle.png')
     clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
@@ -150,15 +152,8 @@ def main():
     clear_text = Label(root, text="Clear", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
     clear_text.grid(column=3, row=4, sticky=N)
 
-
-    speech_text = StringVar()
-    # speech_btn = Button(root, textvariable=speech_text, command=lambda:speech(), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
-    # speech_text.set("Speech")
-    # speech_btn.grid(column=3, row=5, sticky=W)
-
     
     print(bind_map)
-    # UNCOMMENT BELOW
     ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
 
     for i in range (100):
@@ -173,26 +168,26 @@ def main():
         #print(len(values))
         if (len(values)==1 or len(values)==6):
             if (str(values[0]) == "W"):
-                if (current_char != None):
-                    current_text += current_char
-                    translated_text = translate(current_text, current_lang)
+                if (curr.char != None):
+                    curr.text += curr.char
+                    translated_text = translate(curr.text, curr.lang)
             elif (str(values[0]) == "D"):
                 values.pop(0) #remove "D" from data
                 #print(values)
                 temp = classify(values, bind_map)
                 #print(temp)
-                current_char = temp
-                char_c['text'] = current_char
-                #current_char = classify(values, bind_map)
+                curr.char = temp
+                char_c['text'] = curr.char
+                #curr.char = classify(values, bind_map)
 
             elif (str(values[0]) == "S"):
-                audio_thread = Thread(target=tts, args=[current_text, current_lang])
+                audio_thread = Thread(target=tts, args=[curr.text, curr.lang])
                 audio_thread.start()
             elif (str(values[0]) == "C"):
-                current_text = ""
-            text_eng.configure(text=current_text)
+                curr.text = ""
+            text_eng.configure(text=curr.text)
             text_other.configure(text=translated_text)
-            #print("current_char: {0}, current_text: {1}".format(current_char, current_text))
+            #print("curr.char: {0}, curr.text: {1}".format(curr.char, curr.text))
 
 if __name__ == "__main__":
     main()
