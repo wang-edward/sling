@@ -79,7 +79,7 @@ def update(ser, bindings, char, text, lang):
 
 def change_language(selection):
     print(lang_to_code)
-    curr.lang = lang_to_code.get(selection)
+    curr.lang = lang_to_code.get(str(selection))
     print(curr.lang)
 
 
