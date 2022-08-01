@@ -1,6 +1,6 @@
 from tkinter import *
 from turtle import bgcolor
-from python_translator import Translator
+# from python_translator import Translator
 import json
 
 """
@@ -25,7 +25,7 @@ root = Tk()
 
 def speech():
     # set text to smt
-    p['text'] = "HAHAHAHhfioewhaiofhxeiowacmjfioewhajoicfheiwoahcfioewhaiocfheiwoahcfjiehifewhaciofheiowahcuoifheiwoahxfioewhaciofhewicFHUEWAHFUOEWHAUOFBEWJAFBUOEWHAUFHESOUAIHFUOESHAFUOBEAIWUFBEIHABUARUWAH"
+    text_eng['text'] = "HAHAHAHhfiewhiwoahcfioefheiowahcuoifheiwoahxfioewhaciofhewicFHUEWAHFUOEWHAUOFBEWJAFBUOEWHAUFHESOUAIHFUOESHAFUOBEAIWUFBEIHABUARUWAH"
 
 
 root.title('SLING DEMO')
@@ -44,8 +44,8 @@ h_eng.grid(column=0, row=1, sticky=SW, padx=35)
 frame_eng = Frame(root, width=250, height=200, bg="white")
 frame_eng.grid(columnspan=2, rowspan=1, column=0, row=2, ipadx=50, padx=35, sticky=W)
 
-text_eng = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=200)
-text_eng.grid(column=0, row=2, sticky=NW, padx=40, pady=25)
+text_eng = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
+text_eng.grid(column=0, row=2, sticky=NW, padx=(40,0), pady=(25,0))
 
 
 
@@ -63,8 +63,8 @@ drop["bg"]="#FFFF82"
 frame_other = Frame(root, width=250, height=200, bg="white")
 frame_other.grid(columnspan=2, rowspan=1, column=2, row=2, ipadx=50, sticky=W)
 
-text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=200)
-text_other.grid(column=2, row=2, sticky=NW, pady=25)
+text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
+text_other.grid(column=2, row=2, sticky=NW, pady=(25,0))
 
 
 # Current char --------------------------->
