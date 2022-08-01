@@ -10,17 +10,13 @@ import os
 import struct
 import re
 import json
-# import helpers
+from helpers import bind_map, lang_to_code
+# bind_map 0=a, 1=b etc.
 
 
-global current_char
-global current_text
-global current_lang
-global bind_map # 0=a, 1=b etc.
-global translated_text
-global lang_to_code
-lang_to_code = {}
-
+# global current_char
+# global current_text
+# global current_lang
 
 def read(ser):
     values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
@@ -42,12 +38,6 @@ def classify(values, bind_map):
     ans = bind_map.get(str(sum))
     #print(ans)
     return (bind_map.get(str(sum)))
-
-
-def change_language(selection):
-    print(lang_to_code)
-    current_lang = lang_to_code.get(selection)
-    print(current_lang)
 
 
 def translate(read_text, read_lang):
@@ -87,14 +77,12 @@ def main():
     current_text = ""
     current_lang = "en"
     translated_text = ""
-    lang_to_code = {}
 
-    lang_data = json.load(open('lang.json'))
-
-    for i in lang_data["text"]:
-        lang_to_code[i["language"]] = i["code"]
-
-
+    def change_language(selection):
+        print(lang_to_code)
+        current_lang = lang_to_code.get(selection)
+        print(current_lang)
+    
     root = Tk()
 
     root.title('SLING DEMO')
@@ -124,7 +112,7 @@ def main():
     # Text selected in dropdown
     clicked = StringVar(value="Select:")
 
-    drop = OptionMenu(root, clicked, *options, command = change_language)
+    drop = OptionMenu(root, clicked, *options, command=change_language(clicked))
     drop.config(font=("Avenir", 16), fg="#333333", bd=0, width=15)
     drop.grid(column=2, row=1, sticky=SW)
     drop["bg"]="#FFFF82"
@@ -168,11 +156,10 @@ def main():
     # speech_text.set("Speech")
     # speech_btn.grid(column=3, row=5, sticky=W)
 
-    with open('binds.json', 'r') as f:
-        bind_map = json.load(f)
+    
     print(bind_map)
     # UNCOMMENT BELOW
-    # ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
+    ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
 
     for i in range (100):
         #get rid of startup serial
