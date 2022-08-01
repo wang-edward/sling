@@ -15,7 +15,9 @@ global current_char
 global current_text
 global current_lang
 global bind_map
-
+global translated_text
+global lang_to_code
+lang_to_code = {}
 def read(ser):
     values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
     #print(values)
@@ -33,14 +35,23 @@ def classify(values, bind_map):
     for i in range(5):
         sum += 2 ** i * conc[i]
     ans = bind_map.get(str(sum))
-    print(ans)
+    #print(ans)
     return (bind_map.get(str(sum)))
+
+def change_language(selection):
+    print(lang_to_code)
+    current_lang = lang_to_code.get(selection);
+    print(current_lang)
+def translate(read_text, read_lang):
+    translator = Translator()
+    new_text = str(translator.translate(read_text, read_lang, "en"))
+    return new_text
 
 def tts(read_text, read_lang):
     translator = Translator()
     new_text = str(translator.translate(read_text, read_lang, "en"))
 
-    speak = gTTS(text=read_text, lang=read_lang)
+    speak = gTTS(text=new_text, lang=read_lang)
     name = read_text.replace(" ", "_") + ".mp3"
     speak.save(name)
     os.system("mpg321 " + name)
@@ -64,34 +75,87 @@ def main():
     current_char = "."
     current_text = ""
     current_lang = "en"
+    translated_text = ""
     lang_to_code = {}
+
     lang_data = json.load(open('lang.json'))
+
     for i in lang_data["text"]:
         lang_to_code[i["language"]] = i["code"]
 
+
     root = Tk()
-    root.title("sling")
-    canvas = Frame(root, width=800, height=500, bg="#B5D99C")
-    canvas.grid(columnspan=5, rowspan=7)
-    heading = Label(root, text="SLING", font=("Avenir", 32), bg="#B5D99C", fg="#333333")
-    heading.grid(columnspan=3, column=1, row=0)
-    h2 = Label(root, text="Translated characters: ", font=("Avenir", 16), bg="#B5D99C", fg="#333333")
-    h2.grid(columnspan=3, column=1, row=2)
-    p = Message(root, text=current_text, font=("Avenir", 18), bg="#F5F7DC", fg="#333333")
-    p.grid(columnspan=3, column=1, row=3)
-    prompt = Label(root, text="Select a language in the dropdown below:", font=("Avenir", 16), bg="#B5D99C", fg="#333333")
-    prompt.grid(columnspan=3, column=1, row=4)
-    speech_text = StringVar()
-    speech_btn = Button(root, textvariable=speech_text, command=lambda:tts(current_text, current_lang), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
-    speech_text.set("Speech")
-    speech_btn.grid(column=3, row=5, sticky=W)
+
+    root.title('SLING DEMO')
+
+    canvas = Frame(root, width=800, height=500, bg="#F5F7DC")
+    canvas.grid(columnspan=4, rowspan=5)
+
+    heading = Label(root, text="Sling", font=("Avenir", 32), bg="#F5F7DC", fg="#333333")
+    heading.grid(column=0, row=0, sticky=W, padx=35)
+
+
+# ENGLISH SECTION ----------------------------------->
+    h_eng = Label(root, text="English", font=("Avenir", 16), bg="#F5F7DC", fg="#333333", highlightthickness=2, highlightbackground="#FFFF82")
+    h_eng.grid(column=0, row=1, sticky=SW, padx=35)
+
+    frame_eng = Frame(root, width=250, height=200, bg="white")
+    frame_eng.grid(columnspan=2, rowspan=1, column=0, row=2, ipadx=50, padx=35, sticky=W)
+
+    text_eng = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
+    text_eng.grid(column=0, row=2, sticky=NW, padx=(40,0), pady=(25,0))
+
+
+
+# OTHER LANGUAGES SECTION  --------------------------->
     options = lang_to_code.keys()
+
 # Text selected in dropdown
     clicked = StringVar(value="Select:")
-    drop = OptionMenu(root, clicked, *options)
+
+    drop = OptionMenu(root, clicked, *options, command = change_language)
     drop.config(font=("Avenir", 16), fg="#333333", bd=0, width=15)
-    drop.grid(column=1, row=5, sticky=E)
+    drop.grid(column=2, row=1, sticky=SW)
     drop["bg"]="#FFFF82"
+
+    frame_other = Frame(root, width=250, height=200, bg="white")
+    frame_other.grid(columnspan=2, rowspan=1, column=2, row=2, ipadx=50, sticky=W)
+
+    text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
+    text_other.grid(column=2, row=2, sticky=NW, pady=(25,0))
+
+
+# Current char --------------------------->
+    cur_char_txt = Label(root, text="Current Character", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
+    cur_char_txt.grid(column=0, row=3, sticky=E, padx=10)
+
+    char_c = Message(root, text="a", font=("Avenir", 18), bg="white", fg="#333333")
+    char_c.grid(column=1, row=3, sticky=W)
+
+# Bottom btns ---------------------------->
+
+    speak_icon = PhotoImage(file='img/volume-high.png')
+#speak_icon = speak_icon.subsample(2,2)
+# img_label= Label(image=speak_icon)
+    speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
+    speak_btn.grid(column=2, row=3)
+
+
+    speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
+    speak_text.grid(column=2, row=4, sticky=N)
+
+    clear_icon = PhotoImage(file = 'img/close-circle.png')
+    clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
+    clear_btn.grid(column=3, row=3)
+
+    clear_text = Label(root, text="Clear", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
+    clear_text.grid(column=3, row=4, sticky=N)
+
+
+    speech_text = StringVar()
+# speech_btn = Button(root, textvariable=speech_text, command=lambda:speech(), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
+# speech_text.set("Speech")
+# speech_btn.grid(column=3, row=5, sticky=W)
 
     with open('binds.json', 'r') as f:
         bind_map = json.load(f)
@@ -107,22 +171,29 @@ def main():
         root.update()
         values = read(ser)
         #print(values[0])
-        if (str(values[0]) == "W"):
-            if (current_char != None):
-                current_text += current_char
-        if (str(values[0]) == "D"):
-            values.pop(0) #remove "D" from data
-            #print(values)
-            temp = classify(values, bind_map)
-            print(temp)
-            current_char = temp
-            #current_char = classify(values, bind_map)
+        #print(len(values))
+        if (len(values)==1 or len(values)==6):
+            if (str(values[0]) == "W"):
+                if (current_char != None):
+                    current_text += current_char
+                    translated_text = translate(current_text, current_lang)
+            elif (str(values[0]) == "D"):
+                values.pop(0) #remove "D" from data
+                #print(values)
+                temp = classify(values, bind_map)
+                #print(temp)
+                current_char = temp
+                char_c['text'] = current_char
+                #current_char = classify(values, bind_map)
 
-        if (str(values[0]) == "S"):
-            audio_thread = Thread(target=tts, args=[current_text, current_lang])
-            audio_thread.start()
-        print("current_char: {0}, current_text: {1}".format(current_char, current_text))
-        p['text'] = current_text
+            elif (str(values[0]) == "S"):
+                audio_thread = Thread(target=tts, args=[current_text, current_lang])
+                audio_thread.start()
+            elif (str(values[0]) == "C"):
+                current_text = ""
+            text_eng.configure(text=current_text)
+            text_other.configure(text=translated_text)
+            #print("current_char: {0}, current_text: {1}".format(current_char, current_text))
 
 if __name__ == "__main__":
     main()
