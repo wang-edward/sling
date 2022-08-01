@@ -114,7 +114,7 @@ def main():
     # Text selected in dropdown
     clicked = StringVar(value="Select:")
 
-    drop = OptionMenu(root, clicked, *options, command=change_language(clicked))
+    drop = OptionMenu(root, clicked, *options, command=change_language)
     drop.config(font=("Avenir", 16), fg="#333333", bd=0, width=15)
     drop.grid(column=2, row=1, sticky=SW)
     drop["bg"]="#FFFF82"
