@@ -10,18 +10,23 @@ import os
 import struct
 import re
 import json
+# import helpers
+
 
 global current_char
 global current_text
 global current_lang
-global bind_map
+global bind_map # 0=a, 1=b etc.
 global translated_text
 global lang_to_code
 lang_to_code = {}
+
+
 def read(ser):
     values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
     #print(values)
     return values
+
 
 def classify(values, bind_map):
     conc = {}
@@ -38,14 +43,18 @@ def classify(values, bind_map):
     #print(ans)
     return (bind_map.get(str(sum)))
 
+
 def change_language(selection):
     print(lang_to_code)
-    current_lang = lang_to_code.get(selection);
+    current_lang = lang_to_code.get(selection)
     print(current_lang)
+
+
 def translate(read_text, read_lang):
     translator = Translator()
     new_text = str(translator.translate(read_text, read_lang, "en"))
     return new_text
+
 
 def tts(read_text, read_lang):
     translator = Translator()
@@ -55,6 +64,7 @@ def tts(read_text, read_lang):
     name = read_text.replace(" ", "_") + ".mp3"
     speak.save(name)
     os.system("mpg321 " + name)
+
 
 def update(ser, bindings, char, text, lang):
     values = read(ser)
@@ -70,6 +80,7 @@ def update(ser, bindings, char, text, lang):
     if (str(values[0]) == "S"):
         audio_thread = Thread(target=tts, args=[text, lang])
         audio_thread.start()
+
 
 def main():
     current_char = "."
@@ -95,7 +106,7 @@ def main():
     heading.grid(column=0, row=0, sticky=W, padx=35)
 
 
-# ENGLISH SECTION ----------------------------------->
+    # ENGLISH SECTION ----------------------------------->
     h_eng = Label(root, text="English", font=("Avenir", 16), bg="#F5F7DC", fg="#333333", highlightthickness=2, highlightbackground="#FFFF82")
     h_eng.grid(column=0, row=1, sticky=SW, padx=35)
 
@@ -107,10 +118,10 @@ def main():
 
 
 
-# OTHER LANGUAGES SECTION  --------------------------->
+    # OTHER LANGUAGES SECTION  --------------------------->
     options = lang_to_code.keys()
 
-# Text selected in dropdown
+    # Text selected in dropdown
     clicked = StringVar(value="Select:")
 
     drop = OptionMenu(root, clicked, *options, command = change_language)
@@ -125,18 +136,18 @@ def main():
     text_other.grid(column=2, row=2, sticky=NW, pady=(25,0))
 
 
-# Current char --------------------------->
+    # Current char --------------------------->
     cur_char_txt = Label(root, text="Current Character", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
     cur_char_txt.grid(column=0, row=3, sticky=E, padx=10)
 
     char_c = Message(root, text="a", font=("Avenir", 18), bg="white", fg="#333333")
     char_c.grid(column=1, row=3, sticky=W)
 
-# Bottom btns ---------------------------->
+    # Bottom btns ---------------------------->
 
     speak_icon = PhotoImage(file='img/volume-high.png')
-#speak_icon = speak_icon.subsample(2,2)
-# img_label= Label(image=speak_icon)
+    #speak_icon = speak_icon.subsample(2,2)
+    # img_label= Label(image=speak_icon)
     speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
     speak_btn.grid(column=2, row=3)
 
@@ -153,14 +164,15 @@ def main():
 
 
     speech_text = StringVar()
-# speech_btn = Button(root, textvariable=speech_text, command=lambda:speech(), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
-# speech_text.set("Speech")
-# speech_btn.grid(column=3, row=5, sticky=W)
+    # speech_btn = Button(root, textvariable=speech_text, command=lambda:speech(), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
+    # speech_text.set("Speech")
+    # speech_btn.grid(column=3, row=5, sticky=W)
 
     with open('binds.json', 'r') as f:
         bind_map = json.load(f)
     print(bind_map)
-    ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
+    # UNCOMMENT BELOW
+    # ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
 
     for i in range (100):
         #get rid of startup serial
