@@ -9,7 +9,6 @@ from threading import Thread
 import os
 import struct
 import re
-import json
 from helpers import bind_map, lang_to_code
 
 
@@ -101,32 +100,36 @@ def main():
 
 
     # ENGLISH SECTION ----------------------------------->
-    h_eng = Label(root, text="English", font=("Avenir", 16), bg="#F5F7DC", fg="#333333", highlightthickness=2, highlightbackground="#FFFF82")
-    h_eng.grid(column=0, row=1, sticky=SW, padx=35)
 
-    frame_eng = Frame(root, width=250, height=200, bg="white")
-    frame_eng.grid(columnspan=2, rowspan=1, column=0, row=2, ipadx=50, padx=35, sticky=W)
+    expand_frame = Frame(root, height=240, bg="#F5F7DC")
+    expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
 
-    text_eng = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
-    text_eng.grid(column=0, row=2, sticky=NW, padx=(40,0), pady=(25,0))
+    frameBox = PhotoImage(file='img/boxFrame.png')
+    frameEng = Label(root, image=frameBox, bg="#F5F7DC")
+    frameEng.grid(rowspan=2, columnspan=2, column=0, row=1, sticky=NS, padx=17, ipady=20)
+
+    h_eng = Label(root, text="Text (English)", font=("Avenir", 16), bg="#333333", fg="#FFFF82")
+    h_eng.grid(column=0, row=1, sticky=NW, padx=35, pady=(30, 0))
+
+    text_eng = Message(root, text="apple", font=("Avenir", 18), bg="white", fg="#333333", width=320)
+    text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx=(30,0))
 
 
     # OTHER LANGUAGES SECTION  --------------------------->
+    frameOther = Label(root, image=frameBox, bg="#F5F7DC")
+    frameOther.grid(rowspan=2, columnspan=2, column=2, row=1, sticky=NS, ipady=20)
+
     options = lang_to_code.keys()
 
     # Text selected in dropdown
     clicked = StringVar(value="Select:")
 
     drop = OptionMenu(root, clicked, *options, command=change_language)
-    drop.config(font=("Avenir", 16), fg="#333333", bd=0, width=15)
-    drop.grid(column=2, row=1, sticky=SW)
-    drop["bg"]="#FFFF82"
+    drop.config(font=("Avenir", 16), fg="#333333", bg='#333333', bd=0, width=15)
+    drop.grid(column=2, row=1, sticky=NW, padx=(35,0), pady=(30,0))
 
-    frame_other = Frame(root, width=250, height=200, bg="white")
-    frame_other.grid(columnspan=2, rowspan=1, column=2, row=2, ipadx=50, sticky=W)
-
-    text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
-    text_other.grid(column=2, row=2, sticky=NW, pady=(25,0))
+    text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=320)
+    text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx=(30,0))
 
 
     # Current char --------------------------->
@@ -142,10 +145,10 @@ def main():
     speak_icon = speak_icon.subsample(2,2)
     # img_label= Label(image=speak_icon)
     speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
-    speak_btn.grid(column=2, row=3)
+    speak_btn.grid(column=2, row=3, sticky=W, padx=40)
 
     speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
-    speak_text.grid(column=2, row=4, sticky=N)
+    speak_text.grid(column=2, row=4, sticky=NW, padx=40)
 
 
     clear_icon = PhotoImage(file = 'img/close-circle.png')

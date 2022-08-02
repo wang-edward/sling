@@ -15,10 +15,8 @@ Green: #B5D99C
 
 lang_to_code = {}
 
-lang_data = json.load(open('lang.json'))
+lang_to_code = json.load(open('lang.json'))
 
-for i in lang_data["text"]:
-    lang_to_code[i["language"]] = i["code"]
 
 
 root = Tk()
@@ -38,33 +36,41 @@ heading.grid(column=0, row=0, sticky=W, padx=35)
 
 
 # ENGLISH SECTION ----------------------------------->
-h_eng = Label(root, text="English", font=("Avenir", 16), bg="#F5F7DC", fg="#333333", highlightthickness=2, highlightbackground="#FFFF82")
-h_eng.grid(column=0, row=1, sticky=SW, padx=35)
 
-frame_eng = Frame(root, width=250, height=200, bg="white")
-frame_eng.grid(columnspan=2, rowspan=1, column=0, row=2, ipadx=50, padx=35, sticky=W)
+expand_frame = Frame(root, height=240, bg="#F5F7DC")
+expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
 
-text_eng = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
-text_eng.grid(column=0, row=2, sticky=NW, padx=(40,0), pady=(25,0))
+frameBox = PhotoImage(file='img/boxFrame.png')
+frameEng = Label(root, image=frameBox, bg="#F5F7DC")
+frameEng.grid(rowspan=2, columnspan=2, column=0, row=1, sticky=NS, padx=17, ipady=20)
+
+h_eng = Label(root, text="Text (English)", font=("Avenir", 16), bg="#333333", fg="#FFFF82")
+h_eng.grid(column=0, row=1, sticky=NW, padx=35, pady=(30, 0))
+
+
+text_eng = Message(root, text="applefwh ejejwfijae afew waf f  ew wf ef w fe f aw  fwa fe awf few f ew fe fwe wae faew f e fe fwa f ew fe efw few af  f f f f e w awf fw fwe   fwe ewf we fw wef fe fw fwe fe efw  few ewf  fwefew w  w e e  e f e f ew f e w f ew f  fw e e f ew f fe f ew  e e  fefw f e  fewfewf few  ef f fw ffe ewwefewf efw ffe", font=("Avenir", 18), bg="white", fg="#333333", width=320)
+text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx=(30,0))
+
 
 
 
 # OTHER LANGUAGES SECTION  --------------------------->
-options = lang_to_code.keys()
+frameOther = Label(root, image=frameBox, bg="#F5F7DC")
+frameOther.grid(rowspan=2, columnspan=2, column=2, row=1, sticky=NS, ipady=20)
+
+options = lang_to_code
 
 # Text selected in dropdown
 clicked = StringVar(value="Select:")
 
 drop = OptionMenu(root, clicked, *options)
-drop.config(font=("Avenir", 16), fg="#333333", bd=0, width=15)
-drop.grid(column=2, row=1, sticky=SW)
-drop["bg"]="#FFFF82"
+drop.config(font=("Avenir", 16), fg="#333333", bg='#333333', bd=0, width=15)
+# drop.config()
+# drop["bg"]="#FFFF82"
+drop.grid(column=2, row=1, sticky=NW, padx=(35,0), pady=(30,0))
 
-frame_other = Frame(root, width=250, height=200, bg="white")
-frame_other.grid(columnspan=2, rowspan=1, column=2, row=2, ipadx=50, sticky=W)
-
-text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=300)
-text_other.grid(column=2, row=2, sticky=NW, pady=(25,0))
+text_other = Message(root, text="applefwh ejejwfijae afew waf f  ew wf ef w fe f aw  fwa fe awf few f ew fe fwe wae faew f e fe fwa f ew fe efw few af  f f f f e w awf fw fwe   fwe ewf we fw wef fe fw fwe fe efw  few ewf  fwefew w  w e e  e f e f ew f e w f ew f  fw e e f ew f fe f ew  e e  fefw f e  fewfewf few  ef f fw ffe ewwefewf efw ffe", font=("Avenir", 18), bg="white", fg="#333333", width=320)
+text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx=(30,0))
 
 
 # Current char --------------------------->
@@ -77,16 +83,17 @@ char_c.grid(column=1, row=3, sticky=W)
 # Bottom btns ---------------------------->
 
 speak_icon = PhotoImage(file='img/volume-high.png')
-#speak_icon = speak_icon.subsample(2,2)
+speak_icon = speak_icon.subsample(2,2)
 # img_label= Label(image=speak_icon)
 speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
-speak_btn.grid(column=2, row=3)
-
+speak_btn.grid(column=2, row=3, sticky=W, padx=40)
 
 speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
-speak_text.grid(column=2, row=4, sticky=N)
+speak_text.grid(column=2, row=4, sticky=NW, padx=40)
+
 
 clear_icon = PhotoImage(file = 'img/close-circle.png')
+clear_icon = clear_icon.subsample(2,2)
 clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
 clear_btn.grid(column=3, row=3)
 
