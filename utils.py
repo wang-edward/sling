@@ -21,7 +21,7 @@ class SlingStorage:
         self.lang = lang
 
 
-curr = SlingStorage(".", "","","en")
+curr = SlingStorage(".", "","","english")
 
 
 def read(ser):
@@ -48,15 +48,15 @@ def classify(values, bind_map):
 
 def translate(read_text, read_lang):
     translator = Translator()
-    new_text = str(translator.translate(read_text, read_lang, "en"))
+    new_text = str(translator.translate(read_text, read_lang, "english"))
     return new_text
 
 
 def tts(read_text, read_lang):
     translator = Translator()
-    new_text = str(translator.translate(read_text, read_lang, "en"))
+    new_text = str(translator.translate(read_text, read_lang, "english"))
 
-    speak = gTTS(text=new_text, lang=read_lang)
+    speak = gTTS(text=new_text, lang=lang_to_code[read_lang.title()])
     name = read_text.replace(" ", "_") + ".mp3"
     speak.save(name)
     os.system("mpg321 " + name)
@@ -80,9 +80,9 @@ def update(ser, bindings, char, text, lang):
 
 def change_language(selection):
     print(lang_to_code)
-    curr.lang = lang_to_code.get(str(selection))
+    #curr.lang = lang_to_code.get(str(selection))
     curr.other_text = translate(curr.text,curr.lang)
-    #curr.lang = str(selection.lower())
+    curr.lang = str(selection.lower())
     print(curr.lang)
 
 
