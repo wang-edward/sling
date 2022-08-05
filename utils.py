@@ -13,11 +13,12 @@ from helpers import bind_map, lang_to_code
 
 
 class SlingStorage:
-    def __init__(self, char, text, other_text, lang):
+    def __init__(self, char, text, other_text, lang, old_text):
         self.char = char
         self.text = text
         self.other_text = other_text
         self.lang = lang
+        self.old_text = 
 
 
 curr = SlingStorage(".", "","","english")
@@ -52,13 +53,17 @@ def translate(read_text, read_lang):
 
 
 def tts(read_text, read_lang):
-    translator = Translator()
-    new_text = str(translator.translate(read_text, read_lang, "english"))
+    print("read_text called")
+    if (read_text.replace(" ","") != ""):
+        print("this is read_text ({0})".format(read_text))
+        print("ASDASDASD\n\n\n\n")
+        translator = Translator()
+        new_text = str(translator.translate(read_text, read_lang, "english"))
 
-    speak = gTTS(text=new_text, lang=lang_to_code[read_lang.title()])
-    name = read_text.replace(" ", "_") + ".mp3"
-    speak.save(name)
-    os.system("mpg321 " + name)
+        speak = gTTS(text=new_text, lang=lang_to_code[read_lang.title()])
+        name = read_text.replace(" ", "_") + ".mp3"
+        speak.save(name)
+        os.system("mpg321 " + name)
 
 
 def update(ser, bindings, char, text, lang):
@@ -83,6 +88,11 @@ def change_language(selection):
     curr.other_text = translate(curr.text,curr.lang)
     curr.lang = str(selection.lower())
     print(curr.lang)
+
+def clear():
+    print("clear_called")
+    curr.text = ""
+    curr.other_text = "" # TODO Overwrite?
 
 
 def main():
@@ -144,7 +154,7 @@ def main():
     speak_icon = PhotoImage(file='img/volume-high.png')
     speak_icon = speak_icon.subsample(2,2)
     # img_label= Label(image=speak_icon)
-    speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
+    speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC", command = tts)
     speak_btn.grid(column=2, row=3, sticky=W, padx=40)
 
     speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
@@ -153,7 +163,7 @@ def main():
 
     clear_icon = PhotoImage(file = 'img/close-circle.png')
     clear_icon = clear_icon.subsample(2,2)
-    clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
+    clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC", command = clear)
     clear_btn.grid(column=3, row=3)
 
     clear_text = Label(root, text="Clear", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
