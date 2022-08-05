@@ -18,7 +18,7 @@ class SlingStorage:
         self.text = text
         self.other_text = other_text
         self.lang = lang
-        self.old_text = 
+        self.old_text = old_text 
 
 
 curr = SlingStorage(".", "","","english")
