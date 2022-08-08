@@ -3,7 +3,6 @@ from struct import *
 import serial
 import time
 from python_translator import Translator
-import pyttsx3
 from gtts import gTTS
 from threading import Thread
 import os
