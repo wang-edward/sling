@@ -18,32 +18,37 @@ class SlingStorage:
         self.text = text
         self.other_text = other_text
         self.lang = lang
-        self.old_text = old_text 
+        self.old_text = old_text
 
 
-curr = SlingStorage(".", "","","english")
+curr = SlingStorage(char="",text="",other_text="",lang="english", old_text="")
 
 
 def read(ser):
-    values = re.sub(r"[a-z'\\]", "", str(ser.readline())).split()
-    #print(values)
+    s = ser.readline()
+    values = re.sub(r"[a-z'\\]", "", str(s)).split()
+    print(values)
     return values
 
 
 def classify(values, bind_map):
-    conc = {}
-    for i in range(5):
-        if (float(values[i])<=0.8):
-            conc[i]=1
-        else:
-            conc[i]=0 #implied?
-    sum = 0
+    print(len(values))
+    if (len(values)==5):
+        print("insdie")
+        conc = {}
+        for i in range(5):
+            if (float(values[i])<=0.9):
+                conc[i]=1
+            else:
+                conc[i]=0 #implied?
+        sum = 0
 
-    for i in range(5):
-        sum += 2 ** i * conc[i]
-    ans = bind_map.get(str(sum))
-    #print(ans)
-    return (bind_map.get(str(sum)))
+        for i in range(5):
+            sum += 2 ** i * conc[i]
+        ans = bind_map.get(str(sum))
+        #print(ans)
+        return (bind_map.get(str(sum)))
+    return ""
 
 
 def translate(read_text, read_lang):
@@ -65,23 +70,6 @@ def tts(read_text, read_lang):
         speak.save(name)
         os.system("mpg321 " + name)
 
-
-def update(ser, bindings, char, text, lang):
-    values = read(ser)
-    #print(values[0])
-    if (str(values[0]) == "W"):
-        if (curr.char != ""):
-            curr.text += curr.char
-    if (str(values[0]) == "D"):
-        values.pop(0) #remove "D" from data
-        #print(values)
-        curr.char = classify(values, bindings)
-
-    if (str(values[0]) == "S"):
-        audio_thread = Thread(target=tts, args=[text, lang])
-        audio_thread.start()
-
-
 def change_language(selection):
     print(lang_to_code)
     #curr.lang = lang_to_code.get(str(selection))
@@ -96,8 +84,6 @@ def clear():
 
 
 def main():
-    translated_text = ""
-    
     root = Tk()
 
     root.title('SLING DEMO')
@@ -169,13 +155,14 @@ def main():
     clear_text = Label(root, text="Clear", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
     clear_text.grid(column=3, row=4, sticky=N)
 
-    
     print(bind_map)
     ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
 
     for i in range (100):
         #get rid of startup serial
+        print(i)
         ser.readline()
+    print("agane")
 
     while True:
         root.update_idletasks()
@@ -203,9 +190,13 @@ def main():
                 audio_thread.start()
             elif (str(values[0]) == "C"):
                 curr.text = ""
+                curr.other_text = ""
+            elif(str(values[0]) == "B"):
+                curr.text = curr.text[:-1]
+
             text_eng.configure(text=curr.text)
             text_other.configure(text=curr.other_text)
-            #print("curr.char: {0}, curr.text: {1}".format(curr.char, curr.text))
+            print("curr.char: {0}, curr.text: {1}".format(curr.char, curr.text))
 
 if __name__ == "__main__":
     main()
