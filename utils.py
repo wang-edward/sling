@@ -13,15 +13,16 @@ from helpers import bind_map, lang_to_code
 
 
 class SlingStorage:
-    def __init__(self, char, text, other_text, lang, old_text):
+    def __init__(self, char, text, other_text, lang, old_text, ignore_fingers):
         self.char = char
         self.text = text
         self.other_text = other_text
         self.lang = lang
         self.old_text = old_text
+        self.ignore_fingers = ignore_fingers
 
 
-curr = SlingStorage(char="",text="",other_text="",lang="english", old_text="")
+curr = SlingStorage(char="",text="",other_text="",lang="english", old_text="", ignore_fingers = {})
 
 
 def read(ser):
@@ -34,19 +35,20 @@ def read(ser):
 def classify(values, bind_map):
     print(len(values))
     if (len(values)==5):
-        print("insdie")
         conc = {}
-        for i in range(5):
+        if (curr.ignore_fingers != None):
+            for x in curr.ignore_fingers:
+                values.pop(x)
+        for i in range(len(values)):
             if (float(values[i])<=0.9):
                 conc[i]=1
             else:
                 conc[i]=0 #implied?
         sum = 0
 
-        for i in range(5):
+        for i in range(len(values)):
             sum += 2 ** i * conc[i]
         ans = bind_map.get(str(sum))
-        #print(ans)
         return (bind_map.get(str(sum)))
     return ""
 
@@ -166,7 +168,7 @@ def main():
 
     while True:
         root.update_idletasks()
-        root.update()
+        #root.update()
         values = read(ser)
         #print(values[0])
         #print(len(values))
