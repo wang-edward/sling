@@ -25,31 +25,38 @@ curr = SlingStorage(char="",text="",other_text="",lang="english", old_text="", i
 
 
 def read(ser):
-    s = ser.readline()
-    values = re.sub(r"[a-z'\\]", "", str(s)).split()
-    print(values)
-    return values
+    try:
+        s = ser.readline()
+        values = re.sub(r"[a-z'\\]", "", str(s)).split()
+        print(values)
+        return values
+    except:
+        print("READ ERROR")
+        return ""
 
 
 def classify(values, bind_map):
-    print(len(values))
-    if (len(values)==5):
-        conc = {}
-        if (curr.ignore_fingers != None):
-            for x in curr.ignore_fingers:
-                values.pop(x)
-        for i in range(len(values)):
-            if (float(values[i])<=0.9):
-                conc[i]=1
-            else:
-                conc[i]=0 #implied?
-        sum = 0
+    #print(len(values))
+    try:
+        if (len(values)==5):
+            conc = {}
+            if (curr.ignore_fingers != None):
+                for x in curr.ignore_fingers:
+                    values.pop(x)
+            for i in range(len(values)):
+                if (float(values[i])<=0.9):
+                    conc[i]=1
+                else:
+                    conc[i]=0 #implied?
+            sum = 0
 
-        for i in range(len(values)):
-            sum += 2 ** i * conc[i]
-        ans = bind_map.get(str(sum))
-        return (bind_map.get(str(sum)))
-    return ""
+            for i in range(len(values)):
+                sum += 2 ** i * conc[i]
+            ans = bind_map.get(str(sum))
+            return (bind_map.get(str(sum)))
+    except:
+        print("invalid INPUT")
+        return ""
 
 
 def translate(read_text, read_lang):
@@ -108,7 +115,7 @@ def main():
     h_eng = Label(root, text="Text (English)", font=("Avenir", 16), bg="#333333", fg="#FFFF82")
     h_eng.grid(column=0, row=1, sticky=NW, padx=35, pady=(30, 0))
 
-    text_eng = Message(root, text="apple", font=("Avenir", 18), bg="white", fg="#333333", width=320)
+    text_eng = Message(root, text="", font=("Avenir", 18), bg="white", fg="#333333", width=320)
     text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx=(30,0))
 
 
@@ -125,7 +132,7 @@ def main():
     drop.config(font=("Avenir", 16), fg="#333333", bg='#333333', bd=0, width=15)
     drop.grid(column=2, row=1, sticky=NW, padx=(35,0), pady=(30,0))
 
-    text_other = Message(root, text="applefe", font=("Avenir", 18), bg="white", fg="#333333", width=320)
+    text_other = Message(root, text="", font=("Avenir", 18), bg="white", fg="#333333", width=320)
     text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx=(30,0))
 
 
@@ -141,7 +148,7 @@ def main():
     speak_icon = PhotoImage(file='img/volume-high.png')
     speak_icon = speak_icon.subsample(2,2)
     # img_label= Label(image=speak_icon)
-    speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC", command = tts)
+    speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC", command = lambda: tts(curr.text,curr.lang))
     speak_btn.grid(column=2, row=3, sticky=W, padx=40)
 
     speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
@@ -165,9 +172,14 @@ def main():
         ser.readline()
     print("agane")
 
+    last_time = int(round(time.time() * 1000))
     while True:
+        current_time = int(round(time.time() * 1000))
+        if (current_time - last_time >= 500):
+            print("\n\n\n\n\n\n\n\n\nHTASHDALJKSHDAJKLHSDLAHSDLHASD\n\n\n\n\n\n\n\n\n\n\n")
+            root.update();
+            last_time = current_time
         root.update_idletasks()
-        #root.update()
         values = read(ser)
         #print(values[0])
         #print(len(values))
@@ -177,6 +189,9 @@ def main():
                     curr.text += curr.char
                     translated_text = translate(curr.text, curr.lang)
                     print(curr.text)
+                    text_eng.configure(text=curr.text)
+                    text_other.configure(text=curr.other_text)
+
             elif (str(values[0]) == "D"):
                 values.pop(0) #remove "D" from data
                 #print(values)
@@ -194,9 +209,6 @@ def main():
                 curr.other_text = ""
             elif(str(values[0]) == "B"):
                 curr.text = curr.text[:-1]
-
-            text_eng.configure(text=curr.text)
-            text_other.configure(text=curr.other_text)
             print("curr.char: {0}, curr.text: {1}".format(curr.char, curr.text))
 
 if __name__ == "__main__":
