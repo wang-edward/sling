@@ -1,109 +1,12 @@
-from tkinter import *
-from turtle import bgcolor
-# from python_translator import Translator
 import json
-
-"""
-Colour codes
-Dark grey: #333333
-Light grey: #828282
-Yellow: #FFFF82
-Off white: #F5F7DC
-Green: #B5D99C
-"""
-
-
-lang_to_code = {}
-
-lang_to_code = json.load(open('lang.json'))
-
-
-
-root = Tk()
-
-def speech():
-    # set text to smt
-    text_eng['text'] = "HAHAHAHhfiewhiwoahcfioefheiowahcuoifheiwoahxfioewhaciofhewicFHUEWAHFUOEWHAUOFBEWJAFBUOEWHAUFHESOUAIHFUOESHAFUOBEAIWUFBEIHABUARUWAH"
-
-
-root.title('SLING DEMO')
-
-canvas = Frame(root, width=800, height=500, bg="#F5F7DC")
-canvas.grid(columnspan=4, rowspan=5)
-
-heading = Label(root, text="Sling", font=("Avenir", 32), bg="#F5F7DC", fg="#333333")
-heading.grid(column=0, row=0, sticky=W, padx=35)
-
-
-# ENGLISH SECTION ----------------------------------->
-
-expand_frame = Frame(root, height=240, bg="#F5F7DC")
-expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
-
-frameBox = PhotoImage(file='img/boxFrame.png')
-frameEng = Label(root, image=frameBox, bg="#F5F7DC")
-frameEng.grid(rowspan=2, columnspan=2, column=0, row=1, sticky=NS, padx=17, ipady=20)
-
-h_eng = Label(root, text="Text (English)", font=("Avenir", 16), bg="#333333", fg="#FFFF82")
-h_eng.grid(column=0, row=1, sticky=NW, padx=35, pady=(30, 0))
-
-
-text_eng = Message(root, text="applefwh ejejwfijae afew waf f  ew wf ef w fe f aw  fwa fe awf few f ew fe fwe wae faew f e fe fwa f ew fe efw few af  f f f f e w awf fw fwe   fwe ewf we fw wef fe fw fwe fe efw  few ewf  fwefew w  w e e  e f e f ew f e w f ew f  fw e e f ew f fe f ew  e e  fefw f e  fewfewf few  ef f fw ffe ewwefewf efw ffe", font=("Avenir", 18), bg="white", fg="#333333", width=320)
-text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx=(30,0))
-
-
-
-
-# OTHER LANGUAGES SECTION  --------------------------->
-frameOther = Label(root, image=frameBox, bg="#F5F7DC")
-frameOther.grid(rowspan=2, columnspan=2, column=2, row=1, sticky=NS, ipady=20)
-
-options = lang_to_code
-
-# Text selected in dropdown
-clicked = StringVar(value="Select:")
-
-drop = OptionMenu(root, clicked, *options)
-drop.config(font=("Avenir", 16), fg="#333333", bg='#333333', bd=0, width=15)
-# drop.config()
-# drop["bg"]="#FFFF82"
-drop.grid(column=2, row=1, sticky=NW, padx=(35,0), pady=(30,0))
-
-text_other = Message(root, text="applefwh ejejwfijae afew waf f  ew wf ef w fe f aw  fwa fe awf few f ew fe fwe wae faew f e fe fwa f ew fe efw few af  f f f f e w awf fw fwe   fwe ewf we fw wef fe fw fwe fe efw  few ewf  fwefew w  w e e  e f e f ew f e w f ew f  fw e e f ew f fe f ew  e e  fefw f e  fewfewf few  ef f fw ffe ewwefewf efw ffe", font=("Avenir", 18), bg="white", fg="#333333", width=320)
-text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx=(30,0))
-
-
-# Current char --------------------------->
-cur_char_txt = Label(root, text="Current Character", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
-cur_char_txt.grid(column=0, row=3, sticky=E, padx=10)
-
-char_c = Message(root, text="a", font=("Avenir", 18), bg="white", fg="#333333")
-char_c.grid(column=1, row=3, sticky=W)
-
-# Bottom btns ---------------------------->
-
-speak_icon = PhotoImage(file='img/volume-high.png')
-speak_icon = speak_icon.subsample(2,2)
-# img_label= Label(image=speak_icon)
-speak_btn= Button(root, image=speak_icon, borderwidth=0, bg="#F5F7DC")
-speak_btn.grid(column=2, row=3, sticky=W, padx=40)
-
-speak_text = Label(root, text="Speak", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
-speak_text.grid(column=2, row=4, sticky=NW, padx=40)
-
-
-clear_icon = PhotoImage(file = 'img/close-circle.png')
-clear_icon = clear_icon.subsample(2,2)
-clear_btn = Button(root, image=clear_icon, borderwidth=0, bg="#F5F7DC")
-clear_btn.grid(column=3, row=3)
-
-clear_text = Label(root, text="Clear", font=("Avenir", 16), bg="#F5F7DC", fg="#333333")
-clear_text.grid(column=3, row=4, sticky=N)
-
-
-speech_text = StringVar()
-# speech_btn = Button(root, textvariable=speech_text, command=lambda:speech(), font="Avenir", bg="#828282", fg="#FFFF82", height=2, width=10)
-# speech_text.set("Speech")
-# speech_btn.grid(column=3, row=5, sticky=W)
-
-root.mainloop()
+class App:
+    reading = False
+    char = ""
+    text = ""
+    other_text = ""
+    lang = "english"
+    old_text = ""
+    def __init__(self, ignore_fingers_path, bind_map_path):
+        self.ignore_fingers = json.load(open(ignore_fingers_path))
+        self.bind_map = json.load(open(ignore_fingers_path))
+        
