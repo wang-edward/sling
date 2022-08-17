@@ -5,6 +5,8 @@ import json
 import time
 import serial
 from threading import Thread
+from python_translator import Translator
+from gtts import gTTS
 
 class App:
     CONST_SERIAL = False # TODO replace depedning if plugged in or not
@@ -17,6 +19,8 @@ class App:
     lang = "english"
     old_text = ""
     last_time = 0
+
+    translator = Translator()
 
     if (CONST_SERIAL):
         ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
@@ -45,5 +49,5 @@ class App:
 
     def decision(self):
         current_time = int(round(time.time() * 1000))
-        if (current_time - self.last_time >= self.CONST_POLL_TIME):
+        #if (current_time - self.last_time >= self.CONST_POLL_TIME):
 
