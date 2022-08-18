@@ -28,18 +28,23 @@ class ui:
 
         self.app = App(ignore_fingers_path, bind_map_path, lang_to_code_path)
 
-        self.root.update_idletasks()
-        self.root.attributes('-fullscreen', True)
+        #self.root.update_idletasks()
+        #self.root.attributes('-fullscreen', True)
 
-        dimensions = self.get_dimensions()
+        # dimensions = self.get_dimensions()
+        dimensions = {}
+        dimensions[0] = 800 #width
+        dimensions[1] = 500 #height
         print(dimensions)
 
 
-        canvas = Canvas(self.root, width=dimensions[0], height=dimensions[1], bg=self.CONST_LIGHT_COLOR)
+        canvas = Frame(self.root, width=dimensions[0], height=dimensions[1], bg=self.CONST_LIGHT_COLOR)
+        # canvas = Canvas(self.root, width=800, height=500, bg=self.CONST_LIGHT_COLOR)
         canvas.grid(columnspan=4, rowspan=5)
 
         #TODO REMOVE TEST
-        arc_rect(canvas, 100,100,600,400,100)
+        test_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1]/2, bg=self.CONST_DARK_COLOR)
+        arc_rect(test_canvas, 100,100,600,400,100)
 
 
         heading = Label(self.root, text="Sling", font=("Avenir", 32), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
