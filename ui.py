@@ -23,14 +23,9 @@ class ui:
     CONST_LIGHT_COLOR = "#696eff"
     CONST_HARDCODE_DARK_COLOR = "#333"
 
-    #CONST_RANDOM_COLOR = "#333333"
-    #CONST_MID_COLOR = "#828282"
-
 
     def __init__(self, ignore_fingers_path, bind_map_path, lang_to_code_path):
-        # self.ignore_fingers = json.load(open(ignore_fingers_path))
-        # self.bind_map = json.load(open(bind_map_path))
-        # self.lang_to_code = json.load(open(lang_to_code_path))
+
         self.app = App(ignore_fingers_path, bind_map_path, lang_to_code_path)
 
         self.root.update_idletasks()
@@ -41,16 +36,10 @@ class ui:
 
 
         canvas = Canvas(self.root, width=dimensions[0], height=dimensions[1], bg=self.CONST_LIGHT_COLOR)
-        # canvas = Frame(self.root, width=800, height=500, bg=self.CONST_LIGHT_COLOR)
         canvas.grid(columnspan=4, rowspan=5)
 
-#------------------------------------------------------------------------
-        # points = round_rectangle(50, 50, 750, 500, radius=20, fill="blue")
-        # rect = canvas.create_polygon(points, fill="blue", smooth=True)
-
+        #TODO REMOVE TEST
         arc_rect(canvas, 100,100,600,400,100)
-
-#------------------------------------------------------------------------
 
 
         heading = Label(self.root, text="Sling", font=("Avenir", 32), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
