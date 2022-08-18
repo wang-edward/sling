@@ -1,6 +1,6 @@
 from app import App
 from sl_io import read, classify
-from sl_func import translate, tts
+from sl_func import translate, tts, arc_rect
 
 
 from locale import currency
@@ -33,22 +33,32 @@ class ui:
         # self.lang_to_code = json.load(open(lang_to_code_path))
         self.app = App(ignore_fingers_path, bind_map_path, lang_to_code_path)
 
-        #self.root.update_idletasks()
-        #self.root.attributes('-fullscreen', True)
-        #self.root.state('iconic')
+        self.root.update_idletasks()
+        self.root.attributes('-fullscreen', True)
 
         dimensions = self.get_dimensions()
+        print(dimensions)
 
-        # canvas = Frame(self.root, width=dimensions[0], height=dimensions[1], bg=self.CONST_LIGHT_COLOR)
-        canvas = Frame(self.root, width=800, height=500, bg=self.CONST_LIGHT_COLOR)
+
+        canvas = Canvas(self.root, width=dimensions[0], height=dimensions[1], bg=self.CONST_LIGHT_COLOR)
+        # canvas = Frame(self.root, width=800, height=500, bg=self.CONST_LIGHT_COLOR)
         canvas.grid(columnspan=4, rowspan=5)
+
+#------------------------------------------------------------------------
+        # points = round_rectangle(50, 50, 750, 500, radius=20, fill="blue")
+        # rect = canvas.create_polygon(points, fill="blue", smooth=True)
+
+        arc_rect(canvas, 100,100,600,400,100)
+
+#------------------------------------------------------------------------
+
 
         heading = Label(self.root, text="Sling", font=("Avenir", 32), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
         heading.grid(column=0, row=0, sticky=W, padx=35)
         
         # ENGLISH SECTION ----------------------------------->
 
-        expand_frame = Frame(self.root, height=240, bg=self.CONST_LIGHT_COLOR)
+        expand_frame = Frame(self.root, height=int(int(dimensions[1])/2), bg=self.CONST_LIGHT_COLOR)
         expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
 
         frameBox = PhotoImage(file='img/boxFrame.png')
@@ -75,7 +85,7 @@ class ui:
         drop.config(font=("Avenir", 16), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, width=15)
         drop.grid(column=2, row=1, sticky=NW, padx=(35,0), pady=(30,0))
 
-        text_other = Message(self.root, text="", font=("Avenir", 18), bg="white", fg=self.CONST_DARK_COLOR, width=320)
+        text_other = Message(self.root, text="", font=("Avenir", 18), bg="white", fg=self.CONST_DARK_COLOR, width=int(float(dimensions[0]) * 0.4))
         text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx=(30,0))
 
 
@@ -113,6 +123,10 @@ class ui:
             geometry (str): The standard Tk geometry string.
                 [width]x[height]+[left]+[top]
         """
+
+        # self.root.attributes('-fullscreen', True)
+        #self.root.state('iconic')
+
         self.root.mainloop()
         
     def get_dimensions(self):
