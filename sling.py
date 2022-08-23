@@ -177,7 +177,7 @@ def main():
         current_time = int(round(time.time() * 1000))
         if (current_time - last_time >= 500):
             print("\n\n\n\n\n\n\n\n\nHTASHDALJKSHDAJKLHSDLAHSDLHASD\n\n\n\n\n\n\n\n\n\n\n")
-            root.update();
+            root.update()
             last_time = current_time
         root.update_idletasks()
         values = read(ser)
