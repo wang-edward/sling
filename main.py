@@ -86,8 +86,8 @@ class ui:
         self.expand_frame = Frame(self.root, height=int(int(dimensions[1])/2), bg=self.CONST_LIGHT_COLOR)
         self.expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
 
-        frameBox = PhotoImage(file='img/boxFrame.png')
-        self.frameEng = Label(self.root, image=frameBox, bg=self.CONST_LIGHT_COLOR)
+        self.frameBox = PhotoImage(file='img/boxFrame.png')
+        self.frameEng = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
         self.frameEng.grid(rowspan=2, columnspan=2, column=0, row=1, sticky=NS, padx=17, ipady=20)
 
         self.h_eng = Label(self.root, text="Text (English)", font=("Avenir", 16), bg=self.CONST_HARDCODE_DARK_COLOR, fg=self.CONST_HIGHLIGHT_COLOR)
@@ -98,7 +98,7 @@ class ui:
 
 
         # OTHER LANGUAGES SECTION  --------------------------->
-        self.frameOther = Label(self.root, image=frameBox, bg=self.CONST_LIGHT_COLOR)
+        self.frameOther = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
         self.frameOther.grid(rowspan=2, columnspan=2, column=2, row=1, sticky=NS, ipady=20)
 
         options = self.app.lang_to_code.keys()
