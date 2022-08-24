@@ -46,20 +46,14 @@ def predict(model, values, alphabet_map):
     max_float = -1e9
     max_index = -1
 
-    print(ans_arr)
-    print("length of ans_arr: {0}".format(len(ans_arr)))
-    print("length of ans_arr[0]: {0}".format(len(ans_arr[0])))
-
     # make sure ans_arr is n x 1
     if len(ans_arr) > 1:
-        print("big")
         return
 
     for i in range(len(ans_arr[0])):
         if ans_arr[0][i] > max_float:
             max_float = ans_arr[0][i]
             max_index = i
-            print("{0} is bigger than {1}".format(ans_arr[0][i], max_float))
 
     return alphabet_map[str(max_index)]
 
