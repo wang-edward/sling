@@ -59,13 +59,13 @@ class ui:
 
         self.app = App(ignore_fingers_path, bind_map_path, lang_to_code_path)
 
-        #self.root.update_idletasks()
-        #self.root.attributes('-fullscreen', True)
+        self.root.update_idletasks()
+        self.root.attributes('-fullscreen', True)
 
-        # dimensions = self.get_dimensions()
-        dimensions = {}
-        dimensions[0] = 800 #width
-        dimensions[1] = 500 #height
+        dimensions = self.get_dimensions()
+        # dimensions = {}
+        # dimensions[0] = 800 #width
+        # dimensions[1] = 500 #height
         print(dimensions)
 
 
@@ -74,8 +74,10 @@ class ui:
         self.canvas.grid(columnspan=4, rowspan=5)
 
         #TODO REMOVE TEST
-        test_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1]/2, bg=self.CONST_DARK_COLOR)
-        arc_rect(test_canvas, 100,100,600,400,100)
+        self.left_box
+        self.test_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1]/2, bg=self.CONST_DARK_COLOR)
+        arc_rect(self.test_canvas, 100,100,600,400,100)
+        self.test_canvas.grid(column = 0, columnspan = 2, row = 1, sticky=N)
 
 
         self.heading = Label(self.root, text="Sling", font=("Avenir", 32), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
@@ -87,6 +89,7 @@ class ui:
         self.expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
 
         self.frameBox = PhotoImage(file='img/boxFrame.png')
+
         self.frameEng = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
         self.frameEng.grid(rowspan=2, columnspan=2, column=0, row=1, sticky=NS, padx=17, ipady=20)
 
@@ -123,10 +126,10 @@ class ui:
 
         # Bottom btns ---------------------------->
 
-        speak_icon = PhotoImage(file='img/volume-high.png')
-        speak_icon = speak_icon.subsample(2,2)
+        self.speak_icon = PhotoImage(file='img/volume-high.png')
+        self.speak_icon = self.speak_icon.subsample(2,2)
         # img_label= Label(image=speak_icon)
-        self.speak_btn= Button(self.root, image=speak_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: tts(self.app.text,self.app.lang))
+        self.speak_btn= Button(self.root, image=self.speak_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: tts(self.app.text,self.app.lang))
         self.speak_btn.grid(column=2, row=3, sticky=W, padx=40)
 
         self.speak_text = Label(self.root, text="Speak", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
@@ -145,7 +148,10 @@ class ui:
     def get_dimensions(self):
         geometry = self.root.winfo_geometry()
         dimensions = str(geometry).replace("+", "x").split("x")
-        return dimensions
+        int_dim = []
+        for i in range(len(dimensions)):
+            int_dim.append(int(dimensions[i]))
+        return int_dim
 
 
 bobby = ui("ignore_fingers.json", "binds.json", "lang.json")

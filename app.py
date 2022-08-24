@@ -1,4 +1,4 @@
-from sl_io import read, classify
+from sl_io import read, classify, write_buffer
 from sl_func import translate, tts
 
 import json
@@ -89,6 +89,7 @@ class App:
             except:
                 return "s"
         elif (code == "C"): # clear text buffers
+            write_buffer(self.text)
             self.text = ""
             self.other_text = ""
             return "C"

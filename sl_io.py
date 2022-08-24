@@ -1,5 +1,7 @@
 import re
 import serial
+import time
+import os
 def read(ser):
     try:
         s = ser.readline()
@@ -32,3 +34,12 @@ def classify(values, bind_map, ignore_fingers):
     except:
         print("invalid INPUT")
         return ""
+
+def write_buffer(text):
+    cur = time.localtime()
+    filename = "logs/" + str(cur.tm_year) + "." + str(cur.tm_mon) + "." + str(cur.tm_mday) + "." + str(cur.tm_hour) + "." + str(cur.tm_min) + "." + str(cur.tm_sec) + ".txt"
+    f = open(filename, "w")
+    f.write(text)
+
+if __name__ == "__main__":
+    print()
