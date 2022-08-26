@@ -18,7 +18,7 @@ class App:
 
     reading = False
     char = ""
-    text = ""
+    text = "abcabcabcabcab abcabca bacbacbab a cbacbac bac ac bac ac  ca cac ccccacabab  a b aba"
     other_text = ""
     lang = "english"
     old_text = ""

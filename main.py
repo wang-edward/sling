@@ -1,7 +1,7 @@
 from app import App
 from sl_io import read, classify
 from sl_func import translate, tts, arc_rect
-
+from sl_graphics import round_polygon
 
 from locale import currency
 from tkinter import *
@@ -9,6 +9,7 @@ import os
 import re
 import json
 import time
+import math
 
 
 
@@ -63,6 +64,9 @@ class ui:
         self.root.attributes('-fullscreen', True)
 
         dimensions = self.get_dimensions()
+        # get diagonal dimensions (pythagorean :O)
+        dimensions.append(int(math.sqrt(dimensions[0]**2 + dimensions[1]**2)))
+
         # dimensions = {}
         # dimensions[0] = 800 #width
         # dimensions[1] = 500 #height
@@ -73,36 +77,36 @@ class ui:
         # canvas = Canvas(self.root, width=800, height=500, bg=self.CONST_LIGHT_COLOR)
         self.canvas.grid(columnspan=4, rowspan=5)
 
+        self.heading = Label(self.root, text="Sling", font=("Avenir", int(dimensions[1] / 16)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
+        self.heading.grid(column=0, row=0, sticky="SW", padx=dimensions[0]/16)
+
         #TODO REMOVE TEST
-        self.left_box
-        self.test_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1]/2, bg=self.CONST_DARK_COLOR)
-        arc_rect(self.test_canvas, 100,100,600,400,100)
-        self.test_canvas.grid(column = 0, columnspan = 2, row = 1, sticky=N)
+        self.left_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1] * 3/4, bg=self.CONST_LIGHT_COLOR)
+        self.left_box = round_polygon(self.left_canvas, dimensions[0]/16, dimensions[1]/32, dimensions[0] * 7.5/16, dimensions[1] * 11/16, 20, width = 10, outline = "#FF0000", fill = "#00FF00")
 
+        self.left_canvas.grid(column = 0, columnspan = 2, row = 1, rowspan = 2, sticky = "E")
 
-        self.heading = Label(self.root, text="Sling", font=("Avenir", 32), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
-        self.heading.grid(column=0, row=0, sticky=W, padx=35)
+        self.right_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1] * 3/4, bg=self.CONST_LIGHT_COLOR)
+        self.right_box = round_polygon(self.right_canvas, dimensions[0]/32, dimensions[1]/32, dimensions[0] * 7/16, dimensions[1] * 11/16, 20, width = 10, outline = "#FF0000", fill = "#00FF00")
+
+        self.right_canvas.grid(column = 2, columnspan = 2, row = 1, rowspan = 2, sticky = "W")
+        
         
         # ENGLISH SECTION ----------------------------------->
 
-        self.expand_frame = Frame(self.root, height=int(int(dimensions[1])/2), bg=self.CONST_LIGHT_COLOR)
+        self.expand_frame = Frame(self.root, height=dimensions[1]/2, bg=self.CONST_LIGHT_COLOR)
         self.expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
 
-        self.frameBox = PhotoImage(file='img/boxFrame.png')
+        self.h_eng = Label(self.root, text="Text (English)", font=("Avenir", int(dimensions[1]/32)), bg=self.CONST_HARDCODE_DARK_COLOR, fg=self.CONST_HIGHLIGHT_COLOR)
+        self.h_eng.grid(column=0, row=1, sticky=NW, padx=dimensions[0] * 3/32, pady = (dimensions[1] * 3/32, 0))
 
-        self.frameEng = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
-        self.frameEng.grid(rowspan=2, columnspan=2, column=0, row=1, sticky=NS, padx=17, ipady=20)
-
-        self.h_eng = Label(self.root, text="Text (English)", font=("Avenir", 16), bg=self.CONST_HARDCODE_DARK_COLOR, fg=self.CONST_HIGHLIGHT_COLOR)
-        self.h_eng.grid(column=0, row=1, sticky=NW, padx=35, pady=(30, 0))
-
-        self.text_eng = Message(self.root, text="", font=("Avenir", 18), bg="white", fg=self.CONST_DARK_COLOR, width=320)
-        self.text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx=(30,0))
+        self.text_eng = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width= dimensions[0] * 42/128)
+        self.text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx = (dimensions[0] * 3/32, 0))
 
 
         # OTHER LANGUAGES SECTION  --------------------------->
-        self.frameOther = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
-        self.frameOther.grid(rowspan=2, columnspan=2, column=2, row=1, sticky=NS, ipady=20)
+        # self.frameOther = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
+        # self.frameOther.grid(rowspan=2, columnspan=2, column=2, row=1, sticky=NS, ipady=20)
 
         options = self.app.lang_to_code.keys()
 
@@ -110,11 +114,11 @@ class ui:
         self.clicked = StringVar(value="Select:")
 
         self.drop = OptionMenu(self.root, self.clicked, *options, command=self.app.change_language)
-        self.drop.config(font=("Avenir", 16), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, width=15)
-        self.drop.grid(column=2, row=1, sticky=NW, padx=(35,0), pady=(30,0))
+        self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=15)
+        self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
 
-        self.text_other = Message(self.root, text="", font=("Avenir", 18), bg="white", fg=self.CONST_DARK_COLOR, width=int(float(dimensions[0]) * 0.4))
-        self.text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx=(30,0))
+        self.text_other = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width = dimensions[0] * 10/32)
+        self.text_other.grid(column=2, columnspan=2, row=2, sticky=NW, padx = dimensions[0] * 1/16)
 
 
         # Current char --------------------------->
