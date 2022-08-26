@@ -29,8 +29,15 @@ class ui:
     CONST_HARDCODE_DARK_COLOR = "#333"
 
     def update_text(self):
-        self.text_eng.configure(text = self.app.text)
-        self.text_other.configure(text = self.app.other_text)
+
+        self.text_eng.configure(state = 'normal')
+        self.text_eng.insert(tkinter.INSERT, self.app.text)
+        self.text_eng.configure(state = 'disabled')
+        # self.text_other.configure(text = self.app.other_text)
+
+        self.text_other.configure(state = 'normal')
+        self.text_other.insert(tkinter.INSERT,self.app.other_text)
+        self.text_other.configure(state = 'disabled')
 
     def main(self):
         while (True):
@@ -40,9 +47,9 @@ class ui:
                 self.root.update()
                 self.last_time = current_time
 
-                # self.app.text += "abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                # self.app.other_text += "avbcd "
-                # self.update_text()
+                self.app.text += "abcd abcd abcd abcd abcd abcd abcd abcd abcd "
+                self.app.other_text += "avbcd "
+                self.update_text()
 
 
             self.root.update_idletasks()
@@ -100,15 +107,13 @@ class ui:
         
         # ENGLISH SECTION ----------------------------------->
 
-        self.expand_frame = Frame(self.root, height=dimensions[1]/2, bg=self.CONST_LIGHT_COLOR)
-        self.expand_frame.grid(column=0, columnspan=2, row=2, sticky=N)
-
         self.h_eng = Label(self.root, text="Text (English)", font=("Avenir", int(dimensions[1]/32)), bg=self.CONST_HARDCODE_DARK_COLOR, fg=self.CONST_HIGHLIGHT_COLOR)
         self.h_eng.grid(column=0, row=1, sticky=NW, padx=dimensions[0] * 3/32, pady = (dimensions[1] * 3/32, 0))
 
-        self.text_eng = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width= dimensions[0] * 43/128)
-        self.text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx = (dimensions[0] * 3/32, 0))
+        # self.text_eng = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width= dimensions[0] * 43/128)
 
+        self.text_eng = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
+        self.text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx = (dimensions[0] * 3/32, 0))
 
         # OTHER LANGUAGES SECTION  --------------------------->
         # self.frameOther = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
@@ -123,13 +128,13 @@ class ui:
         self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
         self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
 
-        self.text_other = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width = dimensions[0] * 43/128)
+        # self.text_other = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width = dimensions[0] * 43/128)
 
         # self.text_other = tkinter.scrolledtext.ScrolledText(self.canvas, width=int(dimensions[0]*43/128), height=dimensions[1]/3, font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
 
-        # self.text_other = tkinter.scrolledtext.ScrolledText(self.canvas, width=100, height=50 , font=("Avenir", 10), wrap = tkinter.WORD)
+        self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
 
-        self.text_other.grid(column=2, columnspan=2, row=2, sticky="", padx = dimensions[0] * 1/16)
+        self.text_other.grid(column=2, columnspan=2, row=2, sticky="nw", padx = dimensions[0] * 1/16)
 
 
         # Current char --------------------------->
