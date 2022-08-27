@@ -13,7 +13,7 @@ class dummy_serial:
         print("abc")
 
 class App:
-    CONST_SERIAL = False # TODO replace depedning if plugged in or not
+    CONST_SERIAL = True # TODO replace depedning if plugged in or not
     CONST_POLL_TIME = 500
 
     reading = False
@@ -63,7 +63,8 @@ class App:
         values = []
         if (self.CONST_SERIAL):
             values = read(self.ser)
-        if (not len(values)==1 or len(values)==6):
+        if (len(values)!=1 and len(values)!=6):
+            print("bad data")
             return
         
         code = str(values[0])
@@ -76,10 +77,10 @@ class App:
             self.other_text = translate(self.text, self.lang, self.translator)
             return "W"
         elif (code == "D"): # update current character
-            values.pop[0]
+            values.pop(0)
             temp = classify(values, self.bind_map, self.ignore_fingers)
             self.char = temp
-            print(self.char)
+            # print(self.char)
             return "D"
         elif (code == "S"): # speak in seperate audio thread
             try:

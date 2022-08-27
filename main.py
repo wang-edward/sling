@@ -47,14 +47,10 @@ class ui:
                 self.root.update()
                 self.last_time = current_time
 
-                self.app.text += "abcd abcd abcd abcd abcd abcd abcd abcd abcd "
-                self.app.other_text += "avbcd "
-                self.update_text()
-
-
             self.root.update_idletasks()
 
             code = self.app.decision()
+            # print("code: {0}".format(code))
             if (code == "W"): # write current character to text
                 self.update_text()
 
@@ -68,6 +64,8 @@ class ui:
 
             elif (code == "B"): # backspace (delete last char in text)
                 self.update_text()
+
+            print(self.app.char)
 
     def __init__(self, ignore_fingers_path, bind_map_path, lang_to_code_path):
 
@@ -114,6 +112,8 @@ class ui:
 
         self.text_eng = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
         self.text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx = (dimensions[0] * 3/32, 0))
+        self.text_eng.configure(state = 'disabled')
+
 
         # OTHER LANGUAGES SECTION  --------------------------->
         # self.frameOther = Label(self.root, image=self.frameBox, bg=self.CONST_LIGHT_COLOR)
@@ -133,9 +133,8 @@ class ui:
         # self.text_other = tkinter.scrolledtext.ScrolledText(self.canvas, width=int(dimensions[0]*43/128), height=dimensions[1]/3, font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
 
         self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
-
         self.text_other.grid(column=2, columnspan=2, row=2, sticky="nw", padx = dimensions[0] * 1/16)
-
+        self.text_other.configure(state = 'disabled')
 
         # Current char --------------------------->
         self.cur_char_txt = Label(self.root, text="Current Character", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
