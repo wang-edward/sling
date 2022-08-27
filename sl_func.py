@@ -27,7 +27,7 @@ def translate(read_text, read_lang, translator):
 
 
 def tts(read_text, read_lang, translator):
-    print("read_text called")
+    print("TTS called")
     try:
         if (read_text.replace(" ","") != ""):
             print("this is read_text ({0})".format(read_text))

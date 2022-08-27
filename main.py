@@ -31,19 +31,18 @@ class ui:
     def update_text(self):
 
         self.text_eng.configure(state = 'normal')
-        self.text_eng.insert(tkinter.INSERT, self.app.text)
+        self.text_eng.replace("1.0", tkinter.END, self.app.text)
         self.text_eng.configure(state = 'disabled')
         # self.text_other.configure(text = self.app.other_text)
 
         self.text_other.configure(state = 'normal')
-        self.text_other.insert(tkinter.INSERT,self.app.other_text)
+        self.text_other.insert("1.0", tkinter.END, self.app.other_text)
         self.text_other.configure(state = 'disabled')
 
     def main(self):
         while (True):
             current_time = int(round(time.time() * 1000))
             if (current_time - self.last_time >= 500):
-                #print("big update")
                 self.root.update()
                 self.last_time = current_time
 
@@ -65,11 +64,9 @@ class ui:
             elif (code == "B"): # backspace (delete last char in text)
                 self.update_text()
 
-            print(self.app.char)
+    def __init__(self, ignore_fingers_path, bind_map_path0, bind_map_path1, lang_to_code_path):
 
-    def __init__(self, ignore_fingers_path, bind_map_path, lang_to_code_path):
-
-        self.app = App(ignore_fingers_path, bind_map_path, lang_to_code_path)
+        self.app = App(ignore_fingers_path, bind_map_path0, bind_map_path1, lang_to_code_path)
 
         self.root.update_idletasks()
         self.root.attributes('-fullscreen', True)
@@ -91,14 +88,22 @@ class ui:
         self.heading = Label(self.root, text="Sling", font=("Avenir", int(dimensions[1] / 16)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR, borderwidth=0, highlightthickness=0)
         self.heading.grid(column=0, row=0, sticky="SW", padx=(dimensions[0]/16, 0))
 
+        self.border_thickness = 5
+
         #TODO REMOVE TEST
         self.left_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1] * 3/4, bg=self.CONST_LIGHT_COLOR, highlightthickness=0)
-        self.left_box = round_polygon(self.left_canvas, dimensions[0]/16, dimensions[1]/32, dimensions[0] * 7.5/16, dimensions[1] * 11/16, 20, width = 10, outline = "#FF0000", fill = "#00FF00")
+        self.left_box = round_polygon(self.left_canvas, dimensions[0]/16, dimensions[1]/32, dimensions[0] * 7.5/16, 
+        dimensions[1] * 11/16, 20, width = self.border_thickness, outline = self.CONST_HIGHLIGHT_COLOR, fill = self.CONST_HARDCODE_DARK_COLOR)
+        self.left_canvas.create_line(dimensions[0] / 16, dimensions[1]/6.25, dimensions[0] * 7.5/16, dimensions[1]/6.25, fill=self.CONST_HIGHLIGHT_COLOR, width=self.border_thickness)
+
+
 
         self.left_canvas.grid(column = 0, columnspan = 2, row = 1, rowspan = 2, sticky = "E")
 
         self.right_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1] * 3/4, bg=self.CONST_LIGHT_COLOR, highlightthickness=0)
-        self.right_box = round_polygon(self.right_canvas, dimensions[0]/32, dimensions[1]/32, dimensions[0] * 7/16, dimensions[1] * 11/16, 20, width = 10, outline = "#FF0000", fill = "#00FF00")
+        self.right_box = round_polygon(self.right_canvas, dimensions[0]/32, dimensions[1]/32, dimensions[0] * 7/16, dimensions[1] * 11/16, 20, width = self.border_thickness, outline = self.CONST_HIGHLIGHT_COLOR, fill = self.CONST_HARDCODE_DARK_COLOR)
+        self.right_canvas.create_line(dimensions[0] / 32, dimensions[1]/6.25, dimensions[0] * 7/16, dimensions[1]/6.25, fill=self.CONST_HIGHLIGHT_COLOR, width=self.border_thickness)
+
 
         self.right_canvas.grid(column = 2, columnspan = 2, row = 1, rowspan = 2, sticky = "W")
         
@@ -127,10 +132,6 @@ class ui:
         self.drop = OptionMenu(self.root, self.clicked, *options, command=self.app.change_language)
         self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
         self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
-
-        # self.text_other = Message(self.root, text="the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser the pressure is getting wesser", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARK_COLOR, width = dimensions[0] * 43/128)
-
-        # self.text_other = tkinter.scrolledtext.ScrolledText(self.canvas, width=int(dimensions[0]*43/128), height=dimensions[1]/3, font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
 
         self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
         self.text_other.grid(column=2, columnspan=2, row=2, sticky="nw", padx = dimensions[0] * 1/16)
@@ -173,6 +174,6 @@ class ui:
         return int_dim
 
 
-bobby = ui("ignore_fingers.json", "binds.json", "lang.json")
+bobby = ui("ignore_fingers.json", "binds.json", "binds1.json", "lang.json")
 
 bobby.main()
