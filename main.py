@@ -37,6 +37,10 @@ class ui:
         # self.text_other.configure(state = 'normal')
         self.text_other.replace("1.0", tkinter.END, self.app.other_text)
         # self.text_other.configure(state = 'disabled')
+    
+    def clear_command(self):
+        self.app.clear()
+        self.update_text()
 
     def main(self):
         while (True):
@@ -156,7 +160,7 @@ class ui:
 
         self.clear_icon = PhotoImage(file = 'img/close-circle.png')
         self.clear_icon = self.clear_icon.subsample(2,2)
-        self.clear_btn = Button(self.root, image=self.clear_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: self.app.clear)
+        self.clear_btn = Button(self.root, image=self.clear_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = self.clear_command)
         self.clear_btn.grid(column=3, row=3)
 
         self.clear_text = Label(self.root, text="Clear", font=("Avenir", int(dimensions[1]/40)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
