@@ -27,6 +27,44 @@ class ui:
     CONST_HIGHLIGHT_COLOR = "#f8acff"
     CONST_LIGHT_COLOR = "#696eff"
     CONST_HARDCODE_DARK_COLOR = "#333"
+    CONST_DARKER_PINK = "#8b008b"
+
+    def mode(self):
+        dimensions = self.get_dimensions()
+        # get diagonal dimensions (pythagorean :O)
+        dimensions.append(int(math.sqrt(dimensions[0]**2 + dimensions[1]**2)))
+
+        self.right_canvas = Canvas(self.root, width=dimensions[0]/2, height=dimensions[1] * 3/4, bg=self.CONST_LIGHT_COLOR, highlightthickness=0)
+        self.right_box = round_polygon(self.right_canvas, dimensions[0]/32, dimensions[1]/32, dimensions[0] * 7/16, dimensions[1] * 11/16, 20, width = self.border_thickness, outline = self.CONST_HIGHLIGHT_COLOR, fill = self.CONST_HARDCODE_DARK_COLOR)
+        self.right_canvas.create_line(dimensions[0] / 32, dimensions[1]/6.25, dimensions[0] * 7/16, dimensions[1]/6.25, fill=self.CONST_HIGHLIGHT_COLOR, width=self.border_thickness)
+        self.right_canvas.grid(column = 2, columnspan = 2, row = 1, rowspan = 2, sticky = "W")
+
+        self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
+        self.text_other.grid(column=2, columnspan=2, row=2, sticky="nw", padx = dimensions[0] * 1/16)
+        self.text_other.configure(state = 'disabled')
+        
+        self.app.clear()
+        self.update_text()
+
+        if self.app.practice:
+            self.app.practice = False
+            self.mode_text.set("Practice")
+
+            options = self.app.lang_to_code.keys()
+            self.drop = OptionMenu(self.root, self.clicked, *options, command=self.app.change_language)
+            self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARKER_PINK, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
+            self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
+            
+        else:
+            self.app.practice = True
+            self.mode_text.set("Use")
+
+            self.drop = Label(self.root, text="Target Text (Practice Mode)", font=("Avenir", int(dimensions[1]/32)), bg=self.CONST_HARDCODE_DARK_COLOR, fg=self.CONST_HIGHLIGHT_COLOR)
+            self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
+
+            self.text_other.configure(state = 'normal')
+            self.text_other.replace("1.0", tkinter.END, self.app.target_text)
+            self.text_other.configure(state = 'disabled')
 
     def update_text(self):
 
@@ -35,9 +73,10 @@ class ui:
         self.text_eng.configure(state = 'disabled')
         # self.text_other.configure(text = self.app.other_text)
 
-        self.text_other.configure(state = 'normal')
-        self.text_other.insert("1.0", tkinter.END, self.app.other_text)
-        self.text_other.configure(state = 'disabled')
+        if not self.app.practice:
+            self.text_other.configure(state = 'normal')
+            self.text_other.insert("1.0", tkinter.END, self.app.other_text)
+            self.text_other.configure(state = 'disabled')
 
     def main(self):
         while (True):
@@ -129,19 +168,37 @@ class ui:
         # Text selected in dropdown
         self.clicked = StringVar(value="Select:")
 
-        self.drop = OptionMenu(self.root, self.clicked, *options, command=self.app.change_language)
-        self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
-        self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
+        if self.app.practice:
+            self.drop = Label(self.root, text="Target Text (Practice Mode)", font=("Avenir", int(dimensions[1]/32)), bg=self.CONST_HARDCODE_DARK_COLOR, fg=self.CONST_HIGHLIGHT_COLOR)
+            self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
+        else:
+            self.drop = OptionMenu(self.root, self.clicked, *options, command=self.app.change_language)
+            self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARKER_PINK, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
+            self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
 
         self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
         self.text_other.grid(column=2, columnspan=2, row=2, sticky="nw", padx = dimensions[0] * 1/16)
         self.text_other.configure(state = 'disabled')
 
+        if self.app.practice:
+            self.text_other.configure(state = 'normal')
+            self.text_other.replace("1.0", tkinter.END, self.app.target_text)
+            self.text_other.configure(state = 'disabled')
+
+        # Practice btn --------------------------->
+        self.mode_text = StringVar()
+        self.mode_btn = Button(self.root, textvariable=self.mode_text, command=lambda:self.mode(), font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARKER_PINK, height=1, width=8)
+        self.mode_btn.grid(column=0, row=3, padx=(dimensions[0] * 1/16,0), sticky=W)
+        if not self.app.practice:
+            self.mode_text.set("Practice")
+        else:
+            self.mode_text.set("Use")
+
         # Current char --------------------------->
-        self.cur_char_txt = Label(self.root, text="Current Character", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
+        self.cur_char_txt = Label(self.root, text="Current Character", font=("Avenir", int(dimensions[1]/40)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
         self.cur_char_txt.grid(column=0, row=3, sticky=E, padx=10)
 
-        self.char_c = Message(self.root, text="a", font=("Avenir", 18), bg="white", fg=self.CONST_DARK_COLOR)
+        self.char_c = Message(self.root, text="a", font=("Avenir", int(dimensions[1]/40)), bg="white", fg=self.CONST_DARKER_PINK)
         self.char_c.grid(column=1, row=3, sticky=W)
 
         # Bottom btns ---------------------------->
@@ -158,7 +215,7 @@ class ui:
 
         self.clear_icon = PhotoImage(file = 'img/close-circle.png')
         self.clear_icon = self.clear_icon.subsample(2,2)
-        self.clear_btn = Button(self.root, image=self.clear_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: self.app.clear)
+        self.clear_btn = Button(self.root, image=self.clear_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: self.app.clear())
         self.clear_btn.grid(column=3, row=3)
 
         self.clear_text = Label(self.root, text="Clear", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)

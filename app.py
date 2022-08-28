@@ -10,7 +10,7 @@ from gtts import gTTS
 
 class dummy_serial:
     def readline(self):
-        print("abc")
+        print("abc", end="")
 
 class App:
     CONST_SERIAL = True # TODO replace depedning if plugged in or not
@@ -18,12 +18,15 @@ class App:
 
     reading = False
     shift = False
+    practice = False
     char = ""
     text = ""
     other_text = ""
     lang = "english"
     old_text = ""
     last_time = 0
+    target_text = "The quick brown fox jumps over the lazy dog"
+    target_index = 0
 
     translator = Translator()
 
@@ -74,8 +77,15 @@ class App:
         if (code == "W"): # write current character to text
             if (self.char == None):
                 return
-            self.text += self.char
-            self.other_text = translate(self.text, self.lang, self.translator)
+            if self.practice:
+                if self.char == self.target_text[self.target_index]:
+                    self.text += self.char
+                    self.target_index += 1
+                else:
+                    return "D" # if char is not target char, ui should still reflect what is being inputted in 'current character' section
+            else:
+                self.text += self.char
+                self.other_text = translate(self.text, self.lang, self.translator)
             return "W"
         elif (code == "D"): # update current character
             values.pop(0) # remove 'D'
