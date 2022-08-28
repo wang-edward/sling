@@ -22,7 +22,6 @@ class App:
     text = ""
     other_text = ""
     lang = "english"
-    old_text = ""
     last_time = 0
 
     translator = Translator()
@@ -31,6 +30,15 @@ class App:
         ser = serial.Serial('/dev/cu.SLAB_USBtoUART', baudrate = 115200, timeout=1)
     else:
         ser = dummy_serial()
+
+    def debug (self):
+        print("""
+            char = {0}
+            text = {1}
+            other_text = {2}
+            lang = {3}
+            shift = {4}
+        """.format(self.char, self.text, self.other_text, self.lang, self.shift))
     
     def init_serial(self):
         if (self.CONST_SERIAL):
@@ -51,25 +59,20 @@ class App:
         temp_text = self.text
         self.text = ""
         self.other_text = ""
-        write_thread = Thread(target=self.backup, args=[temp_text])
+        write_thread = Thread(target=write_buffer, args=[temp_text])
         write_thread.start()
-
-    def backup(self, write_text):
-        t = time.localtime()
-        current_time = time.strftime("%H:%M:%S", t)
-        f = open(t, "a")
-        f.write(write_text)
-        f.close()
 
     def decision(self):
         values = []
         if (self.CONST_SERIAL):
             values = read(self.ser)
         if (len(values)!=1 and len(values)!=6):
-            print("bad data")
+            print("bad data or false")
             return
         
         code = str(values[0])
+        print(values)
+        self.debug()
         
         if (code == "W"): # write current character to text
             if (self.char == None):
@@ -89,7 +92,7 @@ class App:
             return "D"
         elif (code == "S"): # speak in seperate audio thread
             try:
-                audio_thread = Thread(target = tts, args=[self.text, self.lang, self.translator])
+                audio_thread = Thread(target = tts, args=[self.text, self.lang, self.translator, self.lang_to_code])
                 audio_thread.start()
                 return "S"
             except:

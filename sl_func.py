@@ -24,9 +24,10 @@ def translate(read_text, read_lang, translator):
         return new_text
     except:
         print("TRANSLATE FAILED")
+        return "ERROR: Translate failed, check internet connection please :("
 
 
-def tts(read_text, read_lang, translator):
+def tts(read_text, read_lang, translator, lang_to_code):
     print("TTS called")
     try:
         if (read_text.replace(" ","") != ""):

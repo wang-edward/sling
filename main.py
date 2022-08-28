@@ -30,19 +30,18 @@ class ui:
 
     def update_text(self):
 
-        self.text_eng.configure(state = 'normal')
+        # self.text_eng.configure(state = 'normal')
         self.text_eng.replace("1.0", tkinter.END, self.app.text)
-        self.text_eng.configure(state = 'disabled')
-        # self.text_other.configure(text = self.app.other_text)
+        # self.text_eng.configure(state = 'disabled')
 
-        self.text_other.configure(state = 'normal')
-        self.text_other.insert("1.0", tkinter.END, self.app.other_text)
-        self.text_other.configure(state = 'disabled')
+        # self.text_other.configure(state = 'normal')
+        self.text_other.replace("1.0", tkinter.END, self.app.other_text)
+        # self.text_other.configure(state = 'disabled')
 
     def main(self):
         while (True):
             current_time = int(round(time.time() * 1000))
-            if (current_time - self.last_time >= 500):
+            if (current_time - self.last_time >= 1000):
                 self.root.update()
                 self.last_time = current_time
 
@@ -117,7 +116,7 @@ class ui:
 
         self.text_eng = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
         self.text_eng.grid(column=0, columnspan=2, row=2, sticky=NW, padx = (dimensions[0] * 3/32, 0))
-        self.text_eng.configure(state = 'disabled')
+        # self.text_eng.configure(state = 'disabled')
 
 
         # OTHER LANGUAGES SECTION  --------------------------->
@@ -135,13 +134,13 @@ class ui:
 
         self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
         self.text_other.grid(column=2, columnspan=2, row=2, sticky="nw", padx = dimensions[0] * 1/16)
-        self.text_other.configure(state = 'disabled')
+        # self.text_other.configure(state = 'disabled')
 
         # Current char --------------------------->
-        self.cur_char_txt = Label(self.root, text="Current Character", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
-        self.cur_char_txt.grid(column=0, row=3, sticky=E, padx=10)
+        self.cur_char_txt = Label(self.root, text="Current Character: ", font=("Avenir", int(dimensions[1]/32)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
+        self.cur_char_txt.grid(column=0, row=3, sticky=E)
 
-        self.char_c = Message(self.root, text="a", font=("Avenir", 18), bg="white", fg=self.CONST_DARK_COLOR)
+        self.char_c = Message(self.root, text="_", font=("Avenir", int(dimensions[1]/32)), bg="white", fg=self.CONST_DARK_COLOR)
         self.char_c.grid(column=1, row=3, sticky=W)
 
         # Bottom btns ---------------------------->
@@ -149,19 +148,18 @@ class ui:
         self.speak_icon = PhotoImage(file='img/volume-high.png')
         self.speak_icon = self.speak_icon.subsample(2,2)
         # img_label= Label(image=speak_icon)
-        self.speak_btn= Button(self.root, image=self.speak_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: tts(self.app.text,self.app.lang))
+        self.speak_btn= Button(self.root, image=self.speak_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: tts(self.app.text,self.app.lang, self.app.translator, self.app.lang_to_code))
         self.speak_btn.grid(column=2, row=3, sticky=W, padx=40)
 
-        self.speak_text = Label(self.root, text="Speak", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
+        self.speak_text = Label(self.root, text="Speak", font=("Avenir", int(dimensions[1]/40)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
         self.speak_text.grid(column=2, row=4, sticky=NW, padx=40)
-
 
         self.clear_icon = PhotoImage(file = 'img/close-circle.png')
         self.clear_icon = self.clear_icon.subsample(2,2)
         self.clear_btn = Button(self.root, image=self.clear_icon, borderwidth=0, bg=self.CONST_LIGHT_COLOR, command = lambda: self.app.clear)
         self.clear_btn.grid(column=3, row=3)
 
-        self.clear_text = Label(self.root, text="Clear", font=("Avenir", 16), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
+        self.clear_text = Label(self.root, text="Clear", font=("Avenir", int(dimensions[1]/40)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
         self.clear_text.grid(column=3, row=4, sticky=N)
 
         
@@ -173,7 +171,7 @@ class ui:
             int_dim.append(int(dimensions[i]))
         return int_dim
 
+if __name__ == "__main__":
 
-bobby = ui("ignore_fingers.json", "binds.json", "binds1.json", "lang.json")
-
-bobby.main()
+    bobby = ui("ignore_fingers.json", "binds.json", "binds1.json", "lang.json")
+    bobby.main()
