@@ -27,6 +27,7 @@ class ui:
     CONST_HIGHLIGHT_COLOR = "#f8acff"
     CONST_LIGHT_COLOR = "#696eff"
     CONST_HARDCODE_DARK_COLOR = "#333"
+    CONST_DARKER_PINK = "#8b008b"
 
     def update_text(self):
 
@@ -129,7 +130,7 @@ class ui:
         self.clicked = StringVar(value="Select:")
 
         self.drop = OptionMenu(self.root, self.clicked, *options, command=self.app.change_language)
-        self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARK_COLOR, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
+        self.drop.config(font=("Avenir", int(dimensions[1]/32)), fg=self.CONST_DARKER_PINK, bg=self.CONST_HARDCODE_DARK_COLOR, bd=0, height = int(dimensions[1]/640), width=int(dimensions[0] / 100))
         self.drop.grid(column=2, row=1, sticky=NW, padx=(dimensions[0] * 1/16,0), pady = (dimensions[1] * 3/32, 0))
 
         self.text_other = tkinter.scrolledtext.ScrolledText(self.root, width=int(dimensions[0] * 13/512), height=int(dimensions[1]/64), font=("Avenir", int(dimensions[1]/40)), wrap = tkinter.WORD)
@@ -140,7 +141,7 @@ class ui:
         self.cur_char_txt = Label(self.root, text="Current Character: ", font=("Avenir", int(dimensions[1]/32)), bg=self.CONST_LIGHT_COLOR, fg=self.CONST_DARK_COLOR)
         self.cur_char_txt.grid(column=0, row=3, sticky=E)
 
-        self.char_c = Message(self.root, text="_", font=("Avenir", int(dimensions[1]/32)), bg="white", fg=self.CONST_DARK_COLOR)
+        self.char_c = Message(self.root, text="_", font=("Avenir", int(dimensions[1]/32)), bg="white", fg=self.CONST_DARKER_PINK)
         self.char_c.grid(column=1, row=3, sticky=W)
 
         # Bottom btns ---------------------------->
